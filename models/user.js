@@ -1,22 +1,31 @@
+const mongoose = require("mongoose");
+
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
 const userSchema = new Schema({
     username: {
         type: String,
-        required: true
+        required: true,
+        min: 6,
+        max:255
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        min: 6,
+        max: 255
     },
-    description: {
+    email: {
         type: String,
-        default: "This user left nothing."
+        required: true,
+        min: 6,
+        max: 255
+    },
+    data: {
+        type: Date,
+        default: Date.now
     }
 });
 
-const bd_user = model("user", userSchema);
-
-module.exports = bd_user
-
+module.exports = model("User", userSchema);

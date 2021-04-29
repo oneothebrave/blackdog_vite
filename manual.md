@@ -1,16 +1,23 @@
+----------------------------------------
+
+model的文件名格式为：
+
+    首字母大写
+
+    与数据表(collection)名相同,只是少个s
+
+    对应的route文件名为model文件名(小写) + _route
+
+
 
 ----------------------------------------
 
 数据表(collection)名格式为:
 
-    该名字由如：const user = model("user", userSchema);中的 "user"决定，与其他无关
+    该名字由如：const user = model("User", userSchema);中的 "User"决定，与其他无关
 
 ----------------------------------------
 
-model的文件名格式为：
+util:
 
-    与数据表(collection)名相同,只是少个s
-
-    对应的route文件名为model文件名 + _route
-
-
+    该文件夹下放一些后台要用到的方法，驼峰式

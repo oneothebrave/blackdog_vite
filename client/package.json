@@ -7,7 +7,10 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.0.5"
+    "primeicons": "^4.1.0",
+    "primevue": "^3.3.5",
+    "vue": "^3.0.5",
+    "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.2.1",

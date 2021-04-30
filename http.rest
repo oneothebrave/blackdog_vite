@@ -2,7 +2,27 @@ POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-    "username": "oneothebrave",
-    "password": "12345678",
+    "username": "onethebrave",
+    "password": "123456789",
     "email": "oneo@oneo.com"
+}
+
+###
+
+POST http://localhost:3000/api/user/userExist
+Content-Type: application/json
+
+{
+    "email": "oneo@oneo.com"
+}
+
+###
+
+
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+    "email": "oneo@oneo.com",
+    "password": "123456789"
 }

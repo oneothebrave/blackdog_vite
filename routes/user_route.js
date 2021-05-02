@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
         process.env.TOKEN_SECRET,
         { expiresIn: 86400 }
     ); // expire in 1 day
-    res.header('auth-token', token).send("Login success!");
+    res.header('auth-token', token).send(token);
 
 });
 

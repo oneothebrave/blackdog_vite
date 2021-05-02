@@ -1,5 +1,7 @@
 html{
     background: var(--surface-b);
+    width: 100%;
+    height: 100%;
 }
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -9,5 +11,12 @@ html{
     color: #2c3e50;
 }
 .app-name{
-font-family: Luminari, fantasy;
+    font-family: Luminari, fantasy;
+}   
+.contents {
+    margin: 0 auto;
+    max-width: 935px;
+}
+.p-button:focus{
+    box-shadow: none !important;
 }

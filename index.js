@@ -4,7 +4,7 @@
   const mongoose = require("mongoose");
   // http request logger middleware for nodejs
   const morgan = require("morgan");
-  app.use(morgan("tiny"));
+  const cors = require("cors");
   // 通过npm install dotenv安装的插件，可以将一些机密配置写在.env文件里面，这些配置不会被别人看到
   const dotenv = require("dotenv");
   dotenv.config();
@@ -24,7 +24,10 @@
 
 
   // MIDDLEWARES
-  app.use(express.json())  // parse request body
+  app
+    .use(express.json())  // parse request body
+    .use(morgan("tiny"))
+    .use(cors())
 
   // route middlewares
   app.use("/api/user", userRoute)

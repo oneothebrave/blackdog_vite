@@ -7,13 +7,15 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "primeicons": "^4.1.0",
     "primevue": "^3.3.5",
+    "primeflex": "^2.0.0",
     "vue": "^3.0.5",
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.2.1",
+    "@vitejs/plugin-vue": "^1.2.2",
     "@vue/compiler-sfc": "^3.0.5",
     "vite": "^2.1.5"
   }

@@ -4,24 +4,24 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
 // check if account exist
-const userExistValidation = async (data, res) => {
+const userExistValidation = async (data) => {
     const schema = joi.object({
         email: joi.string().email().required()
     });
 
     const { error } = schema.validate(data);
     if(error){
-        return res.status(400).send(err.details[0].message)
+        return error.details[0].message
     };
 
-    const user = User.findOne({email: data.email});
+    const user = await User.findOne({email: data.email});
     if(!user){
-        return res.status(400).send("User does not exist")
+        return "User does not exist"
     };
 };
 
 // log validation
-const loginValidation = async (data, res) => {
+const loginValidation = async (data) => {
     const result = {};
     const schema = joi.object({
         email: joi.string().email().required(),
@@ -32,21 +32,21 @@ const loginValidation = async (data, res) => {
     // basic data format checking
     const { error } = schema.validate(data);
     if (error) {
-        result.validationError = res.status(400).send(error.details[0].message);
+        result.validationError = error.details[0].message;
         return result;
     };
 
     // check if email exists
     const user = await User.findOne({email: data.email});
     if(!user){
-        result.validationError = res.status(400).send("Email does not exist.");
+        result.validationError ="Email does not exist.";
         return result;
     };
 
     // check if password correct
     const passwordCorrect = await bcrypt.compareSync(data.password, user.password);
     if(!passwordCorrect){
-        result.validationError = res.status(400).send("Password does not match your email.");
+        result.validationError = "Password does not match your email.";
         return result;
     };
 

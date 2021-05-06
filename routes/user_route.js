@@ -8,9 +8,9 @@ const { loginValidation, userExistValidation } = require("../util/loginValidatio
 // 注册
 router.post("/register", async (req, res) => {
     // validations
-    const validationError = await registerValidation(req.body, res);
+    const validationError = await registerValidation(req.body);
     if (validationError) {
-        return validationError
+        return res.status(400).send(validationError);
     }
     // hash password
     const salt = await bcrypt.genSalt(10); //生成一个盐值(别疑惑，文档就是这么写的)，默认是计算12次。
@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
 
     try {
         await new_user.save();
-        res.send({ user: new_user._id })
+        res.status(200).send({ user: new_user._id })
     } catch (err) {
         res.status(400).send(err);
     };
@@ -33,30 +33,36 @@ router.post("/register", async (req, res) => {
 
 // 账号是否存在(通过看邮箱是不是在数据库判断)
 router.post("/userExist", async (req, res) => {
-    const validationError = await userExistValidation(req.body, res);
+    const validationError = await userExistValidation(req.body);
     if(validationError){
-        return validationError
+        return res.status(400).send(validationError);
     }else{
-        return true
+        return res.status(200).send(true);
     }
 });
 
+const verify = require("./verify"); // use middleware
 // 登录
 router.post("/login", async (req, res) => {
     // validations
-    const validationResult = await loginValidation(req.body, res);
+    const validationResult = await loginValidation(req.body);
     if (validationResult.validationError) {
-        return validationResult.validationError
+        return res.status(400).send(validationResult.validationError);
     };
-
     // create and assign a token !!!
     const token = jwt.sign(
         { _id: validationResult.user._id },
         process.env.TOKEN_SECRET,
         { expiresIn: 86400 }
     ); // expire in 1 day
-    res.header('auth-token', token).send(token);
+    return res.header('auth-token', token).status(200).send(true)
+});
 
+// 直接输url时进行验证
+router.get("/auth",verify, async (req, res) => {
+    console.log(req);
+    const token = req.header("auth-token");
+    console.log("token:",token)
 });
 
 

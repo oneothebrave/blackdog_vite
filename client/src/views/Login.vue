@@ -15,7 +15,7 @@
             :class="{ 'p-invalid': invalidUser }"
             type="text"
             v-model="email"
-            @keydown="handleUsername"
+            @keydown="handleEmail"
           />
           <label for="email">邮箱</label>
         </span>
@@ -30,7 +30,6 @@
             type="password"
             v-model="password"
             @keydown="handlePassword"
-            v-focus
           />
           <label for="password">密码</label>
         </span>
@@ -48,50 +47,49 @@
 </template>
 
 <script>
-import { getCurrentInstance, inject, onBeforeUnmount, ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router"; // 在 composition api中使用useRouter或useRoute来设置路由 取代option api中的this.$route....
 import axios from "axios";
 export default {
   setup() {
     // const { ctx } = getCurrentInstance(); // 替代vue2中的this
+    // 登录界面背景用bd.jpg，切换到其他界面要换背景为纯色
     document.querySelector('html').setAttribute('style', 'background: url("/static/bd.jpg"); background-size: cover');
     onBeforeUnmount(()=>{
       document.querySelector('html').setAttribute('style', 'background: var(--surface-b)');
     });
-    const email = ref("");
-    const showPasswordInput = ref(false);
-    const password = ref("");
-    const invalidUser = ref(false);
-    const invalidPassword = ref(false);
+
+    const email = ref("");  // 邮箱输入框
+    const showPasswordInput = ref(false); // boolean 是否显示密码输入框
+    const password = ref(""); // 密码输入框
+    const invalidUser = ref(false); // 账户无效框变红
+    const invalidPassword = ref(false);  // 密码无效框变红
     const router = useRouter();
+
     const checkUserExist = () => {
       // 检查是否存在该用户
       axios
-        .get("/api/user/userExist", {
-          params: {
+        .post("/api/user/userExist", {
             email: email.value
-          },
         })
         .then((response) => {
-          console.log(response);
-          if (response.data.length) {
-            showPasswordInput.value = !showPasswordInput.value;
-            invalidUser.value = false;
-            invalidPassword.value = false;
-            clearTimeout(user_exist_timer);
-          } else {
-            showPasswordInput.value = false;
-            password.value = "";
-            user_exist_timer = setTimeout(curUserNonentity, 2000);
-          }
-        });
-    };
-    const curUserNonentity = () => {
-      invalidUser.value = true;
+          showPasswordInput.value = !showPasswordInput.value;
+          invalidUser.value = false;
+          invalidPassword.value = false;
+          clearTimeout(user_exist_timer);
+        })
+        .catch((err) => {
+          showPasswordInput.value = false;
+          password.value = "";
+          user_exist_timer = setTimeout(() => {
+            invalidUser.value = true;
+          }, 2000);
+          console.log(err)
+        })
     };
     let find_user_timer; // 用户暂时停止输入了 就假设用户确定已经输入的就是他的账号  开始验证是否有该账号
     let user_exist_timer; //  已验证没有该账号  用户还是没有增加输入  时间一到 提示账号不存在
-    const handleUsername = () => {
+    const handleEmail = () => {
       if (invalidUser.value) {
         invalidUser.value = false;
       }
@@ -108,28 +106,24 @@ export default {
         invalidPassword.value = !invalidPassword.value;
       }
     };
-    const handleLogin = function () {
-      const response = axios
-        .get("/api/user/login", {
-          params: {
-            username: username.value,
+    const handleLogin = () => {
+      axios
+        .post("/api/user/login", {
+            email: email.value,
             password: password.value,
-          },
         })
         .then((response) => {
-          const data = response.data
-          if (data.length) {
             // 路由跳转页面的同时携带参数
             router.push({ 
-              name: "User", 
-              params: {
-                "username": data[0]["username"],
-                "description": data[0]["description"]
-              }
+              name: "Index", 
+              // params: {
+              //   "username": data[0]["username"]
+              // }
             });
-          } else {
-            invalidPassword.value = true;
-          }
+        })
+        .catch((err) => {
+          invalidPassword.value = true;
+          console.log(err)
         });
       // if (username.value === 'oneo' && password.value == '123'){
       //   router.push({name: 'Index'})
@@ -141,7 +135,7 @@ export default {
       email,
       showPasswordInput,
       password,
-      handleUsername,
+      handleEmail,
       handlePassword,
       invalidUser,
       invalidPassword,

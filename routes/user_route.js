@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs"); // 加密密码的插件
 const jwt = require("jsonwebtoken");
 const { registerValidation } = require("../util/registerValidation"); // 注册验证中间件
 const { loginValidation, userExistValidation } = require("../util/loginValidation");
+const verifyToken = require("../util/verifyToken"); // token middleware
 
 // 注册
 router.post("/register", async (req, res) => {
@@ -41,7 +42,6 @@ router.post("/userExist", async (req, res) => {
     }
 });
 
-const verify = require("./verify"); // use middleware
 // 登录
 router.post("/login", async (req, res) => {
     // validations
@@ -55,14 +55,14 @@ router.post("/login", async (req, res) => {
         process.env.TOKEN_SECRET,
         { expiresIn: 86400 }
     ); // expire in 1 day
-    return res.header('auth-token', token).status(200).send(true)
+    return res.status(200).json({"auth-token": token})
 });
 
+
 // 直接输url时进行验证
-router.get("/auth",verify, async (req, res) => {
-    console.log(req);
-    const token = req.header("auth-token");
-    console.log("token:",token)
+router.get("/auth",verifyToken, async (req, res) => {
+    res.status(200)
+
 });
 
 

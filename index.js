@@ -10,7 +10,8 @@
   dotenv.config();
 
   // import routes
-  const userRoute = require("./routes/user_route")
+  const userRoute = require("./routes/user_route");
+  const uploadRoute = require("./routes/upload_route");
 
 
   // connect db
@@ -31,6 +32,7 @@
 
   // route middlewares
   app.use("/api/user", userRoute)
+  app.use("/api/upload", uploadRoute)
 
 
 

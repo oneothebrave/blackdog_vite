@@ -15,7 +15,7 @@ module.exports = {
   resolve: {
     alias: {
       "/@": pathResolve("src"),
-      "/config": pathResolve("public/config"),
+      "/static": pathResolve("public/static"),
       "/com": pathResolve("src/components")
     }
   },

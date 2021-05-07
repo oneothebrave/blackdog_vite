@@ -113,6 +113,8 @@ export default {
             password: password.value,
         })
         .then((response) => {
+            // 跳转页面的时候验证token
+            localStorage["auth-token"] = response.data["auth-token"]
             // 路由跳转页面的同时携带参数
             router.push({ 
               name: "Index", 

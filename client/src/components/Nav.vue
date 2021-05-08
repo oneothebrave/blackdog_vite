@@ -37,7 +37,7 @@
                     <div class="p-field">
                       <label for="workUpload"><h5>上传作品</h5></label>
                       <!-- <FileUpload mode="basic" url="/api/upload/" accept="image/*" :maxFileSize="1000000" @upload="onUpload" :auto="true" chooseLabel="Browse" /> -->
-                      <input type="file"  id="workUpload" name="workUpload" @change="getWorkFiles"/>
+                      <input type="file"  id="workUpload" name="workUpload" @change="getWorkFile"/>
                     </div>
                     <div class="p-field">
                       <label for="workIntro"><h5>作品简介</h5></label>
@@ -80,12 +80,27 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
+import axios from "axios";
 export default {
     setup(){
         const displayDialog = ref(false);
         const workName = ref("");
+        let workFile = null;
         const workIntro = ref("");
+        let userAvatar = null;
+        onBeforeMount(() => {
+            axios
+                .get("/api/user/getAvatar",
+                {
+                    headers: {"email": localStorage["auth-token"]}
+                })
+                .then(() => {
+
+                })
+        });
+
+
         // // 个人
         // toggleUserMenu(event) {
         //     this.$refs.user_menu.toggle(event);
@@ -103,16 +118,38 @@ export default {
         };
 
         // 上传图片的文件监听器
-        const getWorkFiles = (event) => {
-            console.log(123)
-            console.log(event)
+        const getWorkFile = (event) => {
+            const reader = new FileReader();
+            reader.onload = function(){
+                workFile = this.result
+            };
+            reader.readAsDataURL(event.target.files[0]);
         };
 
         // 发布作品
         const releaseWork = () => {
             console.log("releasing  Work....");
             console.log(workName);
+            console.log(workFile);
             console.log(workIntro);
+            axios
+                .post("/api/upload/",
+                {
+                    workName: workName.value,
+                    workFile: workFile,
+                    workIntro: workIntro.value,
+                    
+                },
+                {
+                    headers: {"auth-token": localStorage["auth-token"]}
+                })
+                .then((response) => {
+                    debugger
+                })
+                .catch((err) => {
+                    debugger
+                })
+
 
         };
        
@@ -133,7 +170,7 @@ export default {
             openDialog,
             closeDialog,
             onUpload,
-            getWorkFiles,
+            getWorkFile,
             releaseWork,
             workName,
             workIntro

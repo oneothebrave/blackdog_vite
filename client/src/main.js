@@ -36,6 +36,9 @@ app
     // v-focus
 import d_focus from "./composable/js/directive-focus.js"
 app.directive("focus", d_focus);
+    // v-lazyload
+import d_lazyload from "./composable/js/directive-lazyload.js"
+app.directive("lazyload", d_lazyload);
 
 
 // 注册 PrimeVue的组件

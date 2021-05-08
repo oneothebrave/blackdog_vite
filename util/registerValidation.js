@@ -7,7 +7,8 @@ const registerValidation = async (data) => {
     const schema = joi.object({
         username: joi.string().min(6).required(),
         password: joi.string().min(6).required(),
-        email: joi.string().required().email()
+        email: joi.string().required().email(),
+        avatar: joi.string()
     });
 
     // lets validate the data before we commit a user using joi

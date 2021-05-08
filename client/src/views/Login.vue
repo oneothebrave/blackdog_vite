@@ -30,6 +30,7 @@
             type="password"
             v-model="password"
             @keydown="handlePassword"
+            v-focus
           />
           <label for="password">密码</label>
         </span>
@@ -113,8 +114,10 @@ export default {
             password: password.value,
         })
         .then((response) => {
-            // 跳转页面的时候验证token
-            localStorage["auth-token"] = response.data["auth-token"]
+            // 将token保存进localStorage中
+            localStorage["auth-token"] = response.data["auth-token"];
+            // 将username保存进cookie中
+            document.cookie = "email=" + response.data["email"] + ";max-age=" + 86400
             // 路由跳转页面的同时携带参数
             router.push({ 
               name: "Index", 

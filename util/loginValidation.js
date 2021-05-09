@@ -1,6 +1,6 @@
 // @hapi/joi 就是一个检查的工具
 const joi = require("@hapi/joi");
-const User = require("../models/User");
+const userModel = require("../models/User");
 const bcrypt = require("bcryptjs");
 
 // check if account exist
@@ -14,7 +14,7 @@ const userExistValidation = async (data) => {
         return error.details[0].message
     };
 
-    const user = await User.findOne({email: data.email});
+    const user = await userModel.findOne({email: data.email});
     if(!user){
         return "User does not exist"
     };
@@ -37,7 +37,7 @@ const loginValidation = async (data) => {
     };
 
     // check if email exists
-    const user = await User.findOne({email: data.email});
+    const user = await userModel.findOne({email: data.email});
     if(!user){
         result.validationError ="Email does not exist.";
         return result;

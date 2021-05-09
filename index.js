@@ -21,7 +21,7 @@
     useFindAndModify: false,
     useCreateIndex: true
   }).then(() => { console.log('MongoDB database Connected...') })
-    .catch(() => { (err) => { console.log(err) } });
+    .catch(() => { (err) => { console.log("Connection error:" + err) } });
 
 
   // MIDDLEWARES

@@ -1,6 +1,6 @@
 // @hapi/joi 就是一个检查的工具
 const joi = require("@hapi/joi");
-const User = require("../models/User");
+const userModel = require("../models/User");
 
 // register validation
 const registerValidation = async (data) => {
@@ -19,13 +19,13 @@ const registerValidation = async (data) => {
     }
 
     // check if username already exists
-    const username = await User.findOne({username: data.username});
+    const username = await userModel.findOne({username: data.username});
     if(username){
         return "This name has been used."
     }
 
     // check if email already exists
-    const emailExist = await User.findOne({email: data.email});
+    const emailExist = await userModel.findOne({email: data.email});
     if(emailExist){
         return"Email already exists."
     }

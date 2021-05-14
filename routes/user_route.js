@@ -55,9 +55,12 @@ router.post("/login", async (req, res) => {
         process.env.TOKEN_SECRET,
         { expiresIn: 86400 }
     ); // expire in 1 day
+    const user = await userModel.findOne({email: req.body.email});
     return res.status(200).json({
         "auth-token": token,
-        "email": req.body.email
+        "email": req.body.email,
+        "username": user.username
+        
     })
 });
 
@@ -69,8 +72,10 @@ router.get("/auth",verifyToken, async (req, res) => {
 });
 
 // 获取用户头像
-router.get("/avatar", verifyToken, async (req, res) => {
-
+router.get("/getAvatar", async (req, res) => {
+    const email = req.header('email');
+    const user = await userModel.findOne({email: email});
+    return res.status(200).send(user.avatar)
 });
 
 

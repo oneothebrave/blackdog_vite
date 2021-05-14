@@ -70,7 +70,7 @@
             </Dialog>
           </div>
           <div class="p-mr-2 p-order-3 p-order-md-3 head-image">
-            <img src="/static/bd.jpg" @click="toggleUserMenu" />
+            <img :src="userAvatar" @click="toggleUserMenu" />
             <TieredMenu ref="user_menu" :model="user_menu" :popup="true" />
           </div>
         </div>
@@ -82,21 +82,22 @@
 <script>
 import { onBeforeMount, ref } from "vue";
 import axios from "axios";
+import { getCookie } from "../composable/js/cookieHandler"
 export default {
     setup(){
         const displayDialog = ref(false);
         const workName = ref("");
         let workFile = null;
         const workIntro = ref("");
-        let userAvatar = null;
+        const userAvatar = ref(""); // 为什么简单地用let userAvatar = null. 不行
         onBeforeMount(() => {
             axios
                 .get("/api/user/getAvatar",
                 {
-                    headers: {"email": localStorage["auth-token"]}
+                    headers: {"email": getCookie("email")}
                 })
-                .then(() => {
-
+                .then((response) => {
+                    userAvatar.value = response.data
                 })
         });
 
@@ -137,8 +138,7 @@ export default {
                 {
                     workName: workName.value,
                     workFile: workFile,
-                    workIntro: workIntro.value,
-                    
+                    workIntro: workIntro.value
                 },
                 {
                     headers: {"auth-token": localStorage["auth-token"]}
@@ -173,7 +173,8 @@ export default {
             getWorkFile,
             releaseWork,
             workName,
-            workIntro
+            workIntro,
+            userAvatar
         }
     }
 

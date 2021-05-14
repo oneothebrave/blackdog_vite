@@ -51,6 +51,7 @@
 import { onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router"; // 在 composition api中使用useRouter或useRoute来设置路由 取代option api中的this.$route....
 import axios from "axios";
+import {setCookie} from "../composable/js/cookieHandler.js"
 export default {
   setup() {
     // const { ctx } = getCurrentInstance(); // 替代vue2中的this
@@ -116,8 +117,10 @@ export default {
         .then((response) => {
             // 将token保存进localStorage中
             localStorage["auth-token"] = response.data["auth-token"];
-            // 将username保存进cookie中
-            document.cookie = "email=" + response.data["email"] + ";max-age=" + 86400
+            // 将username和email保存进cookie中
+            setCookie("email", response.data["email"]);
+            setCookie("username", response.data["username"]);
+            // document.cookie = "email=" + response.data["email"] + ";max-age=" + 86400
             // 路由跳转页面的同时携带参数
             router.push({ 
               name: "Index", 

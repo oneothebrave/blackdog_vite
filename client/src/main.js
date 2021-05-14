@@ -10,6 +10,9 @@ import "primevue/resources/themes/fluent-light/theme.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 
+//js
+// import {setCookie, getCookie, delCookie} from "./composable/js/cookieHandler.js"
+
 // 导入PrimeVue的组件
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button';
@@ -32,7 +35,6 @@ app
     .use(PrimeVue, {ripple: true})
 
 //自定义指令集
-
     // v-focus
 import d_focus from "./composable/js/directive-focus.js"
 app.directive("focus", d_focus);

@@ -8,6 +8,8 @@
   // 通过npm install dotenv安装的插件，可以将一些机密配置写在.env文件里面，这些配置不会被别人看到
   const dotenv = require("dotenv");
   dotenv.config();
+  // express解析formdata需要用到
+  const formidableMiddleware = require('express-formidable');
 
   // import routes
   const userRoute = require("./routes/user_route");
@@ -29,6 +31,7 @@
     .use(express.json())  // parse request body
     .use(morgan("tiny"))
     .use(cors())
+    .use(formidableMiddleware())
 
   // route middlewares
   app.use("/api/user", userRoute)

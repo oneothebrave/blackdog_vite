@@ -36,8 +36,8 @@
                     </div>
                     <div class="p-field">
                       <label for="workUpload"><h5>上传作品</h5></label>
-                      <!-- <FileUpload mode="basic" url="/api/upload/" accept="image/*" :maxFileSize="1000000" @upload="onUpload" :auto="true" chooseLabel="Browse" /> -->
-                      <input type="file"  id="workUpload" name="workUpload" @change="getWorkFile"/>
+                      <!-- <FileUpload mode="basic" url="/api/upload/uploadWorkFile" accept="image/*" :maxFileSize="1000000" @upload="onUpload" chooseLabel="Browse" /> -->
+                      <input type="file"  id="workUpload" accept="image/*" name="workUpload" @change="getWorkFile"/>
                     </div>
                     <div class="p-field">
                       <label for="workIntro"><h5>作品简介</h5></label>
@@ -127,21 +127,28 @@ export default {
             reader.readAsDataURL(event.target.files[0]);
         };
 
+
         // 发布作品
         const releaseWork = () => {
             console.log("releasing  Work....");
-            console.log(workName);
-            console.log(workFile);
-            console.log(workIntro);
+            const formData = new FormData();
+            formData.append("workName", workName.value);
+            formData.append("workFile", workFile);
+            formData.append("workIntro", workIntro.value);
             axios
                 .post("/api/upload/",
+                // {
+                //   formData
+                //     // workName: workName.value,
+                //     // workFile: workFile,
+                //     // workIntro: workIntro.value
+                // },
+                formData,
                 {
-                    workName: workName.value,
-                    workFile: workFile,
-                    workIntro: workIntro.value
-                },
-                {
-                    headers: {"auth-token": localStorage["auth-token"]}
+                    headers: {
+                        "auth-token": localStorage["auth-token"],
+                        "Content-Type":"multipart/form-data"
+                      }
                 })
                 .then((response) => {
                     debugger
@@ -154,14 +161,14 @@ export default {
         };
        
         //上传图片
-        const onUpload = () => {
+        const onUpload = (event) => {
             console.log(123)
-            this.$toast.add({
-                severity: "info",
-                summary: "成功",
-                detail: "文件上传成功",
-                life: 3000,
-            });
+            const reader = new FileReader();
+            reader.onload = function(){
+                workFile = this.result
+                console.log(workFile)
+            };
+            reader.readAsDataURL(event.target.files[0]);
         };
 
         return {

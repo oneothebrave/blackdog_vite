@@ -2,10 +2,12 @@ const router = require("express").Router();
 const workModel = require("../models/Work");
 const jwt = require("jsonwebtoken");
 const verifyToken = require("../util/verifyToken");
+// express解析formdata需要用到
+const formidableMiddleware = require('express-formidable');
 
 
 // 上传整个作品(文件+标题+简介)
-router.post("/",verifyToken, async (req, res) => {
+router.post("/",verifyToken,formidableMiddleware(), async (req, res) => {
     const token = req.header("auth-token");
     const userId = jwt.decode(token)._id
 

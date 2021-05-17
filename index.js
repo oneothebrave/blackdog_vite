@@ -4,16 +4,15 @@
   const mongoose = require("mongoose");
   // http request logger middleware for nodejs
   const morgan = require("morgan");
-  const cors = require("cors");
+  const cors = require("cors");   // 本来以为是为了支持CORS跨域用的，结果不去app.use注册好像也没问题，不知道这个是干什么的了
   // 通过npm install dotenv安装的插件，可以将一些机密配置写在.env文件里面，这些配置不会被别人看到
   const dotenv = require("dotenv");
   dotenv.config();
-  // express解析formdata需要用到
-  const formidableMiddleware = require('express-formidable');
 
   // import routes
   const userRoute = require("./routes/user_route");
   const uploadRoute = require("./routes/upload_route");
+  const retrieveRoute = require("./routes/retrieve_route");
 
 
   // connect db
@@ -30,12 +29,12 @@
   app
     .use(express.json())  // parse request body
     .use(morgan("tiny"))
-    .use(cors())
-    .use(formidableMiddleware())
+    // .use(cors())
 
   // route middlewares
   app.use("/api/user", userRoute)
   app.use("/api/upload", uploadRoute)
+  app.use("/api/retrieve", retrieveRoute)
 
 
 

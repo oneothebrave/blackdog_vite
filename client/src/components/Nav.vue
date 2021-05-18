@@ -162,11 +162,9 @@ export default {
        
         //上传图片
         const onUpload = (event) => {
-            console.log(123)
             const reader = new FileReader();
             reader.onload = function(){
                 workFile = this.result
-                console.log(workFile)
             };
             reader.readAsDataURL(event.target.files[0]);
         };

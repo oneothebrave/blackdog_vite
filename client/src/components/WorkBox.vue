@@ -31,7 +31,8 @@
         {{ workName }}
       </div>
       <div class="work-work">
-        <img :src="workFile" />
+        <!-- <img :src="workFile" /> -->
+        <img v-lazyload="workFile" />
       </div>
     </section>
     <section class="p-col work-comment-container">

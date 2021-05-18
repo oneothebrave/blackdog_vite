@@ -26,7 +26,6 @@ function loadImage(el, imgSrc){
 
 export default{
     mounted(el, binding){
-        console.log(binding)
         // 初始化时展示默认图片
         el.src = phImg;
         //将需要加载的图片地址绑定在dom上

@@ -7,75 +7,103 @@
 </template>
 
 <script>
-import Nav from "../components/Nav.vue"
+import Nav from "../components/Nav.vue";
 import WorkBox from "../components/WorkBox.vue";
-import { onBeforeMount, reactive } from 'vue';
+import { onBeforeMount, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 export default {
-    components:{
-        Nav,
-        WorkBox
-    },
-    setup(){
-        const router = useRouter();
-        const works = reactive([]);
-        onBeforeMount(() => {
-            await axios
-                .get("/api/user/auth",
-                    {
-                        headers: {
-                            "auth-token": localStorage["auth-token"]
-                        }
-                    }
-                )
-                .then((response) => {
-                    // 获取数据
-                    axios
-                        .get("/api/retrieve/")
-                        .then((res) => {
-                            for(const work of res.data){
-                                works.push({
-                                    "_id": work._id,
-                                    "workName": work.workName,
-                                    "workFile": work.workFile,
-                                    "workIntro": work.workIntro,
-                                    "authorAvatar": work.authorAvatar,
-                                    "authorName": work.authorName
-                                });
-                            };
-                        })
-                })
-                .catch((err) => {
-                    // 验证不通过就跳回到Login页面
-                    router.push({
-                        name: "Login"
-                    });
-                })
+  components: {
+    Nav,
+    WorkBox,
+  },
+  setup() {
+    const router = useRouter();
+    const works = reactive([]); 
+    let ready4load = true; 
+    let skip = 0;
+    onBeforeMount(() => {
+      axios
+        .get("/api/user/auth", {
+          headers: {
+            "auth-token": localStorage["auth-token"],
+          },
+        })
+        .then((response) => {
+            loadData()
+        })
+        .catch((err) => {
+          // 验证不通过就跳回到Login页面
+          router.push({
+            name: "Login",
+          });
         });
-        
+    });
 
-        // const works = [
-        //     {"_id": 1, "title": "el3", "src": "/static/el3.jpg", "authorHead": "/static/el3.jpg", "authorName": "mario9", "info": "This one takes the cake for the sheer number of “thirteen ways of looking at x” knockoffs that I’ve seen. But please see also: “The Emperor of Ice-Cream.”"},
-        //     {"_id": 2, "title": "el2", "src": "/static/el2.jpg", "authorHead": "/static/el2.jpg", "authorName": "mario8", "info": "To be quite honest, my favorite Plath poem is “The Applicant.” But “Daddy” is still the most iconic, especially if you’ve ever heard her read it aloud."},
-        //     {"_id": 3, "title": "el1", "src": "/static/el1.jpg", "authorHead": "/static/el1.jpg", "authorName": "mario7", "info": "One of the defining works of the Harlem Renaissance, by its greatest poet. It also, of course, gave inspiration and lent a title to another literary classic: Lorraine Hansberry’s A Raisin in the Sun."},
-        //     {"_id": 4, "title": "l2", "src": "/static/l2.jpg", "authorHead": "/static/l2.jpg", "authorName": "mario6", "info": "The truth is, there are lots of equally iconic Dickinson poems, so consider this a stand-in for them all. Though, as Jay Parini has noted, this poem is perfect, “one of Dickinson’s most compressed and chilling attempts to come to terms with mortality.”"},
-        //     {"_id": 5, "title": "阿尔卑斯山", "src": "/static/l1.jpg", "authorHead": "/static/l1.jpg", "authorName": "mario5", "info": "Bishop’s much loved and much discussed ode to loss, which Claudia Roth Pierpont called “a triumph of control, understatement, wit. Even of self-mockery, in the poetically pushed rhyme word “vaster,” and the ladylike, pinkies-up “shan’t.” An exceedingly rare mention of her mother—as a woman who once owned a watch. A continent standing in for losses larger than itself.”"},
-        //     {"_id": 6, "title": "m2", "src": "/static/m2.jpg", "authorHead": "/static/m2.jpg", "authorName": "mario4", "info": "This blew my mind in high school, and I wasn’t the only one."},
-        //     {"_id": 7, "title": "m1", "src": "/static/m1.jpg", "authorHead": "/static/m1.jpg", "authorName": "mario3", "info": "Otherwise known as “the most misread poem in America.” See also: “Stopping by Woods on a Snowy Evening.” And “Birches.” All begin in delight and end in wisdom, as Frost taught us great poems should."},
-        //     {"_id": 8, "title": "s2", "src": "/static/s2.jpg", "authorHead": "/static/s2.jpg", "authorName": "mario2", "info": "Without a doubt one of the most important poems of the 20th century. “It has never lost its glamour,” Paul Muldoon observed. “It has never failed to be equal to both the fracture of its own era and what, alas, turned out to be the even greater fracture of the ongoing 20th century and now, it seems, the 21st century.” See also: “The Love Song of J. Alfred Prufrock.”"},
-        //     {"_id": 9, "title": "s1", "src": "/static/s1.jpg", "authorHead": "/static/s1.jpg", "authorName": "mario", "info": "The most anthologized poem of the last 25 years for a reason. See also: “This is Just to Say,” which, among other things, has spawned a host of memes and parodies."}
-            
-        // ];
-        return {
-            works
-        }
+    // 获取数据
+    function loadData() {
+        console.log(ready4load)
+      if (ready4load) {
+        // 需要加载才能进来，进来就“锁”上
+        ready4load = false;
 
+        axios
+            .get("/api/retrieve/",{
+                params: {
+                    "skip": skip
+                }
+            })
+            .then((res) => {
+                for (const work of res.data) {
+                    works.push({
+                    _id: work._id,
+                    workName: work.workName,
+                    workFile: work.workFile,
+                    workIntro: work.workIntro,
+                    authorAvatar: work.authorAvatar,
+                    authorName: work.authorName,
+                    });
+                }
+                skip = res.data.limitNum;
+                ready4load = true; // 加载完之后开“锁”，允许下一次
+            });
+      }
     }
 
-}
+    const scrollHandler = function () {
+      const scrollHeight = document.documentElement.scrollHeight; // 页面总高度
+      const scrollTop = document.documentElement.scrollTop; // 可视区与页面顶部的距离
+      const clientHeight = document.documentElement.clientHeight; // 可视区的高度
+
+      const distance2bottom = scrollHeight - scrollTop - clientHeight; //可视区离页面底部的距离
+
+      if (distance2bottom < 300) {
+        loadData();
+      }
+    };
+
+
+    onMounted(() => {
+      window.addEventListener("scroll", scrollHandler, false);
+    });
+
+    // const works = [
+    //     {"_id": 1, "workName": "el3", "workFile": "/static/el3.jpg", "authorAvatar": "/static/el3.jpg", "authorName": "mario9", "workIntro": "This one takes the cake for the sheer number of “thirteen ways of looking at x” knockoffs that I’ve seen. But please see also: “The Emperor of Ice-Cream.”"},
+    //     {"_id": 2, "workName": "el2", "workFile": "/static/el2.jpg", "authorAvatar": "/static/el2.jpg", "authorName": "mario8", "workIntro": "To be quite honest, my favorite Plath poem is “The Applicant.” But “Daddy” is still the most iconic, especially if you’ve ever heard her read it aloud."},
+    //     {"_id": 3, "workName": "el1", "workFile": "/static/el1.jpg", "authorAvatar": "/static/el1.jpg", "authorName": "mario7", "workIntro": "One of the defining works of the Harlem Renaissance, by its greatest poet. It also, of course, gave inspiration and lent a workName to another literary classic: Lorraine Hansberry’s A Raisin in the Sun."},
+    //     {"_id": 4, "workName": "l2", "workFile": "/static/l2.jpg", "authorAvatar": "/static/l2.jpg", "authorName": "mario6", "workIntro": "The truth is, there are lots of equally iconic Dickinson poems, so consider this a stand-in for them all. Though, as Jay Parini has noted, this poem is perfect, “one of Dickinson’s most compressed and chilling attempts to come to terms with mortality.”"},
+    //     {"_id": 5, "workName": "阿尔卑斯山", "workFile": "/static/l1.jpg", "authorAvatar": "/static/l1.jpg", "authorName": "mario5", "workIntro": "Bishop’s much loved and much discussed ode to loss, which Claudia Roth Pierpont called “a triumph of control, understatement, wit. Even of self-mockery, in the poetically pushed rhyme word “vaster,” and the ladylike, pinkies-up “shan’t.” An exceedingly rare mention of her mother—as a woman who once owned a watch. A continent standing in for losses larger than itself.”"},
+    //     {"_id": 6, "workName": "m2", "workFile": "/static/m2.jpg", "authorAvatar": "/static/m2.jpg", "authorName": "mario4", "workIntro": "This blew my mind in high school, and I wasn’t the only one."},
+    //     {"_id": 7, "workName": "m1", "workFile": "/static/m1.jpg", "authorAvatar": "/static/m1.jpg", "authorName": "mario3", "workIntro": "Otherwise known as “the most misread poem in America.” See also: “Stopping by Woods on a Snowy Evening.” And “Birches.” All begin in delight and end in wisdom, as Frost taught us great poems should."},
+    //     {"_id": 8, "workName": "s2", "workFile": "/static/s2.jpg", "authorAvatar": "/static/s2.jpg", "authorName": "mario2", "workIntro": "Without a doubt one of the most important poems of the 20th century. “It has never lost its glamour,” Paul Muldoon observed. “It has never failed to be equal to both the fracture of its own era and what, alas, turned out to be the even greater fracture of the ongoing 20th century and now, it seems, the 21st century.” See also: “The Love Song of J. Alfred Prufrock.”"},
+    //     {"_id": 9, "workName": "s1", "workFile": "/static/s1.jpg", "authorAvatar": "/static/s1.jpg", "authorName": "mario", "workIntro": "The most anthologized poem of the last 25 years for a reason. See also: “This is Just to Say,” which, among other things, has spawned a host of memes and parodies."}
+    // ];
+    return {
+      works,
+    };
+  },
+};
 </script>
 
 <style>
-
 </style>

@@ -71,7 +71,7 @@
           </div>
           <div class="p-mr-2 p-order-3 p-order-md-3 head-image">
             <img :src="userAvatar" @click="toggleUserMenu" />
-            <TieredMenu ref="user_menu" :model="user_menu" :popup="true" />
+            <!-- <TieredMenu ref="user_menu" :model="user_menu" :popup="true" /> -->
           </div>
         </div>
       </div>

@@ -133,11 +133,6 @@ export default {
           invalidPassword.value = true;
           console.log(err)
         });
-      // if (username.value === 'oneo' && password.value == '123'){
-      //   router.push({name: 'Index'})
-      // }else{
-      //   invalidPassword.value = true
-      // }
     };
     return {
       email,

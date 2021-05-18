@@ -16,7 +16,6 @@ router.get("/", async (req, res) => {
         work.authorName = author_name;
         work.authorAvatar = author_avatar;
         completely_works.push(work);
-        console.log(work)
     }
     return res.status(200).send(completely_works)
 });

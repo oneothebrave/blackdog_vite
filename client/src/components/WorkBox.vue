@@ -28,16 +28,16 @@
     </section>
     <section class="p-col-8 work-main-container">
       <div class="work-title">
-        {{ workTitle }}
+        {{ workName }}
       </div>
       <div class="work-work">
-        <img :src="workSrc" />
+        <img :src="workFile" />
       </div>
     </section>
     <section class="p-col work-comment-container">
       <div class="work-author p-grid">
         <div class="author-head p-col-fixed">
-          <img :src="workAuthorHead" />
+          <img :src="workAuthorAvatar" />
         </div>
         <div class="author-name p-col p-text-left">
           <span>{{ workAuthorName }}</span>
@@ -48,7 +48,7 @@
       </div>
       <div class="work-info p-text-left">
         <ScrollPanel style="width: 100%; max-height: 120px">
-          <p>{{ workInfo }}</p>
+          <p>{{ workIntro }}</p>
         </ScrollPanel>
       </div>
       <div class="work-comment">
@@ -75,11 +75,11 @@ export default {
   setup(props) {
     //  要使用props中传过来的数据，要把Props当做参数传到setup()中
     // const { title, src } = toRefs(props.work)
-    const workTitle = props.work.title;
-    const workSrc = props.work.src;
-    const workAuthorHead = props.work.authorHead;
+    const workName = props.work.workName;
+    const workFile = props.work.workFile;
+    const workIntro = props.work.workIntro;
+    const workAuthorAvatar = props.work.authorAvatar;
     const workAuthorName = props.work.authorName;
-    const workInfo = props.work.info;
 
 
     //三连
@@ -108,11 +108,11 @@ export default {
     ];
 
     return {
-      workTitle,
-      workSrc,
-      workAuthorHead,
+      workName,
+      workFile,
+      workAuthorAvatar,
       workAuthorName,
-      workInfo,
+      workIntro,
       toggleTriple,
       togglePoi,
       poi_menu,

@@ -21,7 +21,7 @@ const routes = [
   {
     path: '/sk',
     name: 'Sk',
-    component: () => import('../Skeleton.vue')
+    component: () => import('../components/SkeletonIndex.vue')
   },
 ]
 

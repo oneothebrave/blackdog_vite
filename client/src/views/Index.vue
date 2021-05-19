@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Skeleton from "../Skeleton.vue";
+import Skeleton from "../components/SkeletonIndex.vue";
 import Nav from "../components/Nav.vue";
 import WorkBox from "../components/WorkBox.vue";
 import { onBeforeMount, onMounted, onUnmounted, reactive, ref } from "vue";

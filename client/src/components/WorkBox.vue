@@ -128,14 +128,14 @@ export default {
   margin-bottom: 6rem;
 }
 .work-triple-container {
-  width: 50px;
+  width: 53px;
   margin-left: -50px;
   text-align: right;
   position: relative;
 }
 .work-triple {
   position: absolute;
-  bottom: 12px;
+  bottom: 2px;
 }
 .work-triple div {
   position: relative;

@@ -1,6 +1,6 @@
 <template>
   <!--图片全屏预览 -->
-  <div style="height: 7rem"></div>
+  <!-- <div style="height: 7rem"></div> -->
   <Toast/>
   <header class="p-d-flex nav-bar">
     <div class="p-grid p-jc-between nav">

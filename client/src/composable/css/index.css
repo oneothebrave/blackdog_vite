@@ -14,7 +14,7 @@ html{
     font-family: Luminari, fantasy;
 }   
 .contents {
-    margin: 0 auto;
+    margin: 100px auto;
     max-width: 935px;
 }
 .p-button:focus{

@@ -17,7 +17,12 @@ const routes = [
     path: '/index',
     name: 'Index',
     component: () => import('../views/Index.vue')
-  }
+  },
+  {
+    path: '/sk',
+    name: 'Sk',
+    component: () => import('../Skeleton.vue')
+  },
 ]
 
 const router = createRouter({

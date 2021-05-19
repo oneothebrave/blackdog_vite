@@ -26,6 +26,8 @@ import Textarea from 'primevue/textarea';
 import Galleria from 'primevue/galleria';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
+import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
 
 
 const app = createApp(App);
@@ -33,6 +35,7 @@ const app = createApp(App);
 app
     .use(router)
     .use(PrimeVue, {ripple: true})
+    .use(ToastService)
 
 //自定义指令集
     // v-focus
@@ -56,6 +59,7 @@ app.component('Textarea', Textarea);
 app.component('Galleria', Galleria);
 app.component('TabView', TabView);
 app.component('TabPanel', TabPanel);
+app.component('Toast', Toast);
 
 
 app.mount('#app');

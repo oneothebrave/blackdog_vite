@@ -125,7 +125,7 @@ export default {
 
 <style>
 .top-blank {
-  margin-bottom: 3rem;
+  margin-bottom: 6rem;
 }
 .work-triple-container {
   width: 50px;
@@ -152,11 +152,10 @@ export default {
   background: var(--surface-e);
   border-radius: 3px;
   overflow: hidden;
-  border: 1px solid var(--surface-c);
-  border-bottom: none;
+  border: 1px solid var(--surface-100);
 }
 .work-main-container .work-title {
-  border-bottom: 1px solid var(--surface-b);
+  border-bottom: 1px solid var(--surface-50);
   height: 50px;
   padding: 16px;
   align-items: center;

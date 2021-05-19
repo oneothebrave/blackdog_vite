@@ -1,6 +1,7 @@
 <template>
   <!--图片全屏预览 -->
-  <div style="height: 5rem"></div>
+  <div style="height: 7rem"></div>
+  <Toast/>
   <header class="p-d-flex nav-bar">
     <div class="p-grid p-jc-between nav">
       <!-- 名称 -->
@@ -12,7 +13,7 @@
       <div class="p-col-4 p-text-right">
         <div class="p-d-inline-flex nav-func">
           <div class="p-mr-2 p-order-3 p-order-md-3">
-            <Button icon="pi pi-comments" class="p-button-rounded p-button" />
+            <Button icon="pi pi-comments" class="p-button-rounded p-button"/>
           </div>
           <div class="p-mr-2 p-order-3 p-order-md-3">
             <Button
@@ -82,7 +83,8 @@
 <script>
 import { onBeforeMount, ref } from "vue";
 import axios from "axios";
-import { getCookie } from "../composable/js/cookieHandler"
+import { getCookie } from "../composable/js/cookieHandler";
+import { useToast } from "primevue/usetoast";
 export default {
     setup(){
         const displayDialog = ref(false);
@@ -90,6 +92,7 @@ export default {
         let workFile = null;
         const workIntro = ref("");
         const userAvatar = ref(""); // 为什么简单地用let userAvatar = null. 不行
+        const toast = useToast();
         onBeforeMount(() => {
             axios
                 .get("/api/user/getAvatar",
@@ -127,7 +130,6 @@ export default {
             reader.readAsDataURL(event.target.files[0]);
         };
 
-
         // 发布作品
         const releaseWork = () => {
             console.log("releasing  Work....");
@@ -151,7 +153,7 @@ export default {
                       }
                 })
                 .then((response) => {
-                    debugger
+                    toast.add({severity:'success', summary: '成功', detail:'作品已上传', life: 2000});
                 })
                 .catch((err) => {
                     debugger
@@ -160,21 +162,12 @@ export default {
 
         };
        
-        //上传图片
-        const onUpload = (event) => {
-            const reader = new FileReader();
-            reader.onload = function(){
-                workFile = this.result
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        };
 
         return {
             displayDialog,
             // toggleUserMenu,
             openDialog,
             closeDialog,
-            onUpload,
             getWorkFile,
             releaseWork,
             workName,

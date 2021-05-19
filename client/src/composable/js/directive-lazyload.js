@@ -1,5 +1,7 @@
 //导入占位符图片
-import phImg from "/static/placeholder.png"
+// import phImg from "/static/placeholder.png"
+
+const placeholder64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAATSURBVBhXYzh8+PB/dEx9wcP/AcszUgk9YL2cAAAAAElFTkSuQmCC"
 
 //创建一个监听器
 let intersectionObserver = new IntersectionObserver((entries) => {
@@ -27,7 +29,7 @@ function loadImage(el, imgSrc){
 export default{
     mounted(el, binding){
         // 初始化时展示默认图片
-        el.src = phImg;
+        el.src = placeholder64;
         //将需要加载的图片地址绑定在dom上
         el.data_src = binding.value
 

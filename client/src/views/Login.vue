@@ -120,7 +120,6 @@ export default {
             // 将username和email保存进cookie中
             setCookie("email", response.data["email"]);
             setCookie("username", response.data["username"]);
-            // document.cookie = "email=" + response.data["email"] + ";max-age=" + 86400
             // 路由跳转页面的同时携带参数
             router.push({ 
               name: "Index", 

@@ -9,7 +9,7 @@
 <script>
 import Nav from "../components/Nav.vue";
 import WorkBox from "../components/WorkBox.vue";
-import { onBeforeMount, onMounted, reactive } from "vue";
+import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 export default {
@@ -19,9 +19,9 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const works = reactive([]); 
-    let ready4load = true; 
-    let skip = 0;
+    const works = reactive([]);
+    let ready4load = true;
+    let skip = ref(0);
     onBeforeMount(() => {
       axios
         .get("/api/user/auth", {
@@ -30,7 +30,7 @@ export default {
           },
         })
         .then((response) => {
-            loadData()
+          loadData();
         })
         .catch((err) => {
           // 验证不通过就跳回到Login页面
@@ -42,31 +42,49 @@ export default {
 
     // 获取数据
     function loadData() {
-        console.log(ready4load)
+      console.log(ready4load);
       if (ready4load) {
         // 需要加载才能进来，进来就“锁”上
         ready4load = false;
 
         axios
-            .get("/api/retrieve/",{
-                params: {
-                    "skip": skip
-                }
-            })
-            .then((res) => {
-                for (const work of res.data) {
-                    works.push({
-                    _id: work._id,
-                    workName: work.workName,
-                    workFile: work.workFile,
-                    workIntro: work.workIntro,
-                    authorAvatar: work.authorAvatar,
-                    authorName: work.authorName,
-                    });
-                }
-                skip = res.data.limitNum;
-                ready4load = true; // 加载完之后开“锁”，允许下一次
-            });
+          .get("/api/retrieve/", {
+            params: {
+              skip: skip.value,
+            },
+          })
+          .then((res) => {
+            console.log(res);
+            const data = res.data;
+            let work_index = 0;
+            for (;work_index < data.length - 1;work_index++) 
+            {
+              works.push({
+                  _id: data[work_index]._id,
+                  workName: data[work_index].workName,
+                  workFile: data[work_index].workFile,
+                  workIntro: data[work_index].workIntro,
+                  authorAvatar: data[work_index].authorAvatar,
+                  authorName: data[work_index].authorName,
+                });
+              debugger
+              skip.value = data[work_index].limitNum;
+              console.log(skip.value)
+              ready4load = true; // 加载完之后开“锁”，允许下一次
+            }
+            // for (const work of res.data) {
+            //   works.push({
+            //     _id: work._id,
+            //     workName: work.workName,
+            //     workFile: work.workFile,
+            //     workIntro: work.workIntro,
+            //     authorAvatar: work.authorAvatar,
+            //     authorName: work.authorName,
+            //   });
+            // }
+            // skip = res.data.limitNum;
+            // ready4load = true; // 加载完之后开“锁”，允许下一次
+          });
       }
     }
 
@@ -81,7 +99,6 @@ export default {
         loadData();
       }
     };
-
 
     onMounted(() => {
       window.addEventListener("scroll", scrollHandler, false);

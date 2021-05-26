@@ -153,7 +153,7 @@ export default {
                       }
                 })
                 .then((response) => {
-                    toast.add({severity:'success', summary: '成功', detail:'作品已上传', life: 2000});
+                    toast.add({severity:'success', summary: '成功', detail:'作品已上传', life: 3000});
                 })
                 .catch((err) => {
                     debugger

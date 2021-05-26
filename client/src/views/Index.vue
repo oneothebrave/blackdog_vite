@@ -1,6 +1,7 @@
 <template>
-  <Nav/>
-  <Skeleton v-if="showSkeleton"/>
+  <Toast position="bottom-left" group="bl" />
+  <Nav />
+  <Skeleton v-if="showSkeleton" />
   <div class="contents" v-if="!showSkeleton">
     <WorkBox v-for="work in works" :key="work._id" :work="work" />
   </div>
@@ -13,11 +14,12 @@ import WorkBox from "../components/WorkBox.vue";
 import { onBeforeMount, onMounted, onUnmounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { useToast } from "primevue/usetoast";
 export default {
   components: {
     Nav,
     WorkBox,
-    Skeleton
+    Skeleton,
   },
   setup() {
     const router = useRouter();
@@ -25,6 +27,7 @@ export default {
     let ready4load = true;
     let skip = ref(0);
     const showSkeleton = ref(true);
+    const toast = useToast();
     onBeforeMount(() => {
       axios
         .get("/api/user/auth", {
@@ -48,31 +51,59 @@ export default {
       if (ready4load) {
         // 需要加载才能进来，进来就“锁”上
         ready4load = false;
-
+        // 获取作品除了图片之外的其他信息
         axios
-          .get("/api/retrieve/", {
+          .get("/api/retrieve/getBasic", {
             params: {
               skip: skip.value,
             },
           })
-          .then((res) => {
+          .then(async (res) => {
             const data = res.data;
             let work_index = 0;
-            for (;work_index < data.length - 1;work_index++) 
-            {
+            for (; work_index < data.length - 1; work_index++) {
               works.push({
-                  _id: data[work_index]._id,
-                  workName: data[work_index].workName,
-                  workFile: data[work_index].workFile,
-                  workIntro: data[work_index].workIntro,
-                  authorAvatar: data[work_index].authorAvatar,
-                  authorName: data[work_index].authorName,
-                });
+                _id: data[work_index]._id,
+                workName: data[work_index].workName,
+                // workFile: data[work_index].workFile,
+                workIntro: data[work_index].workIntro,
+                authorAvatar: data[work_index].authorAvatar,
+                authorName: data[work_index].authorName,
+              });
             }
-            
-            skip.value += data[work_index].limitNum;
-            ready4load = true; // 加载完之后开“锁”，允许下一次
             showSkeleton.value = false;
+
+            // 获取作品图片
+            await axios // 防止这个还没跑完就去执行下面的then
+              .get("/api/retrieve/getWorkFile", {
+                params: {
+                  skip: skip.value,
+                },
+              })
+              .then((res) => {
+                // 将作品图片放进works里
+                for (
+                  let workFileIndex = skip.value, index=0;
+                  workFileIndex < works.length;
+                  workFileIndex++, index++
+                ) {
+                  works[workFileIndex]["workFile"] =
+                    res.data[index]["workFile"];
+                }
+                skip.value += data[work_index].limitNum;
+                ready4load = true; // 加载完之后开“锁”，允许下一次
+              });
+           
+          })
+          // .then((res) => {
+          //   skip.value += res["data"][res["work_index"]].limitNum;
+          //   ready4load = true; // 加载完之后开“锁”，允许下一次
+          // })
+          .catch((err) => {
+            if(err.response.status == 403){
+               toast.add({severity:'error', summary: '你得支棱起来呀', detail:'别再刷了，今天刷地够多了.',group: 'bl', life: 3000});
+               ready4load = false;
+            }
           });
       }
     }
@@ -93,8 +124,8 @@ export default {
       window.addEventListener("scroll", scrollHandler, false);
     });
 
-    onUnmounted(()=>{
-        window.removeEventListener("scroll", scrollHandler, false);
+    onUnmounted(() => {
+      window.removeEventListener("scroll", scrollHandler, false);
     });
 
     // const works = [
@@ -110,7 +141,7 @@ export default {
     // ];
     return {
       works,
-      showSkeleton
+      showSkeleton,
     };
   },
 };

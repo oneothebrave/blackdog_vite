@@ -31,8 +31,8 @@
         {{ workName }}
       </div>
       <div class="work-work">
-        <!-- <img :src="workFile" /> -->
-        <img v-lazyload="workFile" />
+        <!-- <img :src="workFile.url" /> -->
+        <img v-lazyload="workFile.url" v-show="workFile.url"/>
       </div>
     </section>
     <section class="p-col work-comment-container">
@@ -68,21 +68,25 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { onUpdated, reactive, ref, watchEffect } from "vue";
 // import { toRefs } from 'vue';
 export default {
   name: "WorkItems",
   props: ["work"],
   setup(props) {
     //  要使用props中传过来的数据，要把Props当做参数传到setup()中
-    // const { title, src } = toRefs(props.work)
     const workName = props.work.workName;
-    const workFile = props.work.workFile;
     const workIntro = props.work.workIntro;
     const workAuthorAvatar = props.work.authorAvatar;
     const workAuthorName = props.work.authorName;
-
-
+    // let workFile = props.work.workFile;
+    
+    const workFile = reactive({
+        url: ""
+    });
+    watchEffect(() => {
+      workFile.url = props.work.workFile;
+    })
     //三连
     const toggleTriple = (event) => {
       const currentClass = event.target.className;

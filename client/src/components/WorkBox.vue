@@ -1,6 +1,7 @@
 <template>
   <TieredMenu ref="poi" :model="poi_menu" :popup="true" />
-  <div class="p-grid top-blank">
+  <Toast position="bottom-left" group="bl" />
+  <div class="p-grid top-blank" v-for="work in works" :key="work._id">
     <section class="p-col-1 work-triple-container">
       <div class="work-triple">
         <div>
@@ -28,20 +29,20 @@
     </section>
     <section class="p-col-8 work-main-container">
       <div class="work-title">
-        {{ workName }}
+        {{ work.workName }}
       </div>
       <div class="work-work">
         <!-- <img :src="workFile.url" /> -->
-        <img v-lazyload="workFile.url" v-show="workFile.url"/>
+        <img v-lazyload="work.workFile.url" v-show="work.workFile.url"/>
       </div>
     </section>
     <section class="p-col work-comment-container">
       <div class="work-author p-grid">
         <div class="author-head p-col-fixed">
-          <img :src="workAuthorAvatar" />
+          <img :src="work.workAuthorAvatar" />
         </div>
         <div class="author-name p-col p-text-left">
-          <span>{{ workAuthorName }}</span>
+          <span>{{ work.workAuthorName }}</span>
         </div>
         <div class="author-operate p-col-1" @click="togglePoi">
           <i class="pi pi-ellipsis-h"></i>
@@ -49,7 +50,7 @@
       </div>
       <div class="work-info p-text-left">
         <ScrollPanel style="width: 100%; max-height: 120px">
-          <p>{{ workIntro }}</p>
+          <p>{{ work.workIntro }}</p>
         </ScrollPanel>
       </div>
       <div class="work-comment">
@@ -68,25 +69,104 @@
 </template>
 
 <script>
-import { onUpdated, reactive, ref, watchEffect } from "vue";
+import { onBeforeMount, onMounted, onUpdated, onUnmounted,watchEffect, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import { useToast } from "primevue/usetoast";
 // import { toRefs } from 'vue';
 export default {
-  name: "WorkItems",
-  props: ["work"],
-  setup(props) {
-    //  要使用props中传过来的数据，要把Props当做参数传到setup()中
-    const workName = props.work.workName;
-    const workIntro = props.work.workIntro;
-    const workAuthorAvatar = props.work.authorAvatar;
-    const workAuthorName = props.work.authorName;
-    // let workFile = props.work.workFile;
+  async setup() {
+    const router = useRouter();
+    const works = reactive([]);
+    let ready4load = true;
+    let skip = ref(0);
+    const toast = useToast();
     
-    const workFile = reactive({
-        url: ""
+    
+
+     // 获取数据
+    const loadData = await function() {
+      if (ready4load) {
+        // 需要加载才能进来，进来就“锁”上
+        ready4load = false;
+        // 获取作品除了图片之外的其他信息
+        axios
+          .get("/api/retrieve/getBasic", {
+            params: {
+              skip: skip.value,
+            },
+          })
+          .then(async (res) => {
+            const data = res.data;
+            let work_index = 0;
+            for (; work_index < data.length - 1; work_index++) {
+              works.push({
+                _id: data[work_index]._id,
+                workName: data[work_index].workName,
+                workIntro: data[work_index].workIntro,
+                authorAvatar: data[work_index].authorAvatar,
+                authorName: data[work_index].authorName,
+              });
+            }
+
+            // 获取作品图片
+            await axios // 防止这个还没跑完就去执行下面的then
+              .get("/api/retrieve/getWorkFile", {
+                params: {
+                  skip: skip.value,
+                },
+              })
+              .then((res) => {
+                // 将作品图片放进works里
+                for (
+                  let workFileIndex = skip.value, index=0;
+                  workFileIndex < works.length;
+                  workFileIndex++, index++
+                ) {
+                  works[workFileIndex]["workFile"] =
+                    res.data[index]["workFile"];
+                }
+                skip.value += data[work_index].limitNum;
+                ready4load = true; // 加载完之后开“锁”，允许下一次
+              });
+           
+          })
+          // .then((res) => {
+          //   skip.value += res["data"][res["work_index"]].limitNum;
+          //   ready4load = true; // 加载完之后开“锁”，允许下一次
+          // })
+          .catch((err) => {
+            if(err.response.status == 403){
+               toast.add({severity:'error', summary: '你得支棱起来呀', detail:'别再刷了，今天刷地够多了.',group: 'bl', life: 3000});
+               ready4load = false;
+            }
+          });
+      }
+    };
+
+
+    const scrollHandler = function () {
+      const scrollHeight = document.documentElement.scrollHeight; // 页面总高度
+      const scrollTop = document.documentElement.scrollTop; // 可视区与页面顶部的距离
+      const clientHeight = document.documentElement.clientHeight; // 可视区的高度
+
+      const distance2bottom = scrollHeight - scrollTop - clientHeight; //可视区离页面底部的距离
+
+      if (distance2bottom < 500) {
+        loadData();
+      }
+    };
+
+    onMounted(() => {
+      loadData();
+      window.addEventListener("scroll", scrollHandler, false);
     });
-    watchEffect(() => {
-      workFile.url = props.work.workFile;
-    })
+
+    onUnmounted(() => {
+      window.removeEventListener("scroll", scrollHandler, false);
+    });
+
+
     //三连
     const toggleTriple = (event) => {
       const currentClass = event.target.className;
@@ -113,15 +193,11 @@ export default {
     ];
 
     return {
-      workName,
-      workFile,
-      workAuthorAvatar,
-      workAuthorName,
-      workIntro,
       toggleTriple,
       togglePoi,
       poi_menu,
       poi,
+      works,
     };
   },
 };

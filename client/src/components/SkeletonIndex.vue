@@ -1,5 +1,5 @@
 <template>
-  <div class="p-grid top-blank">
+  <div class="p-grid top-blank" v-for="copy of [1, 2, 3]">
     <section class="p-col-1 work-triple-container">
       <div class="work-triple">
         <div>
@@ -32,13 +32,13 @@
           <span></span>
         </div>
         <div class="author-operate p-col-1">
-          <i class="pi pi-ellipsis-h"></i>
         </div>
       </div>
       <div class="work-info p-text-left">
-        <ScrollPanel style="width: 100%; max-height: 120px">
-          <p></p>
-        </ScrollPanel>
+        <div></div>
+        <div></div>
+        <div></div>
+        <span></span>
       </div>
     </section>
   </div>
@@ -50,13 +50,11 @@ export default {};
 
 <style lang="sass" scoped>
 .top-blank
-    margin-bottom: 6rem
+    margin-bottom: 10rem
 
 .work-triple-container
     width: 53px
     margin-left: -50px
-    text-align: right
-    position: relative
 
 .work-triple
     position: absolute
@@ -81,23 +79,20 @@ export default {};
 
     .work-title
         border-bottom: 1px solid var(--surface-50)
-        height: 30px
-        padding: 16px
+        height: 20px
+        padding: 10px
         align-items: center
         line-height: 18px
         width: 30%
-        margin: 0 auto
+        margin: 10px auto
         border-radius: 3px
         animation: trans-bg 1s infinite
 
 
     .work-work 
         height:500px
-        img
-            width: 100%
-            height: 100%
-            object-fit: cover
-
+        animation: trans-bg 1s infinite
+        
 .work-comment-container
     margin-left: 10px
     position: relative
@@ -105,58 +100,46 @@ export default {};
     .work-author
         border-bottom: 1px solid var(--surface-d)
         padding: 4px 16px 4px 6px
-        img
-            width: 32px
-            height: 32px
-            border-radius: 50%
 
         .author-head img,
         .author-name span,
         .author-operate
             cursor: pointer
+        
+        .author-head
+            width: 32px
+            height: 32px
+            border-radius: 50%
+            animation: trans-bg 1s infinite
 
         .author-name
-            padding: 15px 0 0 3px
+            padding: 10px 0 0 12px
             span
-                color: var(--primary-color)
+                display: block
+                width: 120px
+                height: 15px
+                animation: trans-bg 1s infinite
 
         .author-operate
-            padding-top: 13px
+            padding-top: 7px
+            width: 50px
+            height: 12px
+            margin-top: 10px
+            animation: trans-bg 1s infinite
 
-        .work-info
-            padding: 6px 0 6px 0
-            color: #a2a2a2
-            p
-                font-size: 12px
-
-.work-comment
-    border: 1px solid
-    max-height: 50%
-    margin-bottom: 10%
-
-
-    input
-        height: 50px
-        width: 98%
-        position: absolute
-        bottom: 0
-        border-bottom: 1px solid var(--surface-d)
-        display: flex
-
-
-    input 
-        input
-            width: 76%
-            height: 100%
-            background: var(--surface-b)
-            border: 0
-            flex: 5
-
-
-    input 
-        input:focus
-            border: 0
-            flex: 1
+    .work-info
+        div
+          margin: 15px auto
+          height: 6px
+          width: 100%
+          animation: trans-bg 1s infinite
+        span
+          display: block
+          margin-top: 5px
+          float:left
+          height: 6px
+          width: 20%
+          animation: trans-bg 1s infinite
 
 
 </style>

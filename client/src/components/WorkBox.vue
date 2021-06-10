@@ -33,7 +33,7 @@
       </div>
       <div class="work-work">
         <!-- <img :src="workFile.url" /> -->
-        <img v-lazyload="work.workFile" v-show="work.workFile"/>
+        <img v-lazyload="work.workFile" />
       </div>
     </section>
     <section class="p-col work-comment-container">
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { onMounted , onUnmounted, reactive, ref } from "vue";
+import { onMounted, onUnmounted, reactive, ref, watchEffect } from "vue";
 import axios from "axios";
 import { useToast } from "primevue/usetoast";
 // import { toRefs } from 'vue';
@@ -78,7 +78,9 @@ export default {
     let ready4load = true;
     let skip = ref(0);
     const toast = useToast();
-    let works = null;
+    let works = reactive([]);
+    let sql_data = null;
+    let work_index = 0;
 
     onMounted(() => {
       window.addEventListener("scroll", scrollHandler, false);
@@ -88,9 +90,8 @@ export default {
       window.removeEventListener("scroll", scrollHandler, false);
     });
 
-
-     // 获取数据
-    const loadData = async function() {
+    // 获取数据
+    const loadData = async function () {
       if (ready4load) {
         // 需要加载才能进来，进来就“锁”上
         ready4load = false;
@@ -102,61 +103,56 @@ export default {
             },
           })
           .then(async (res) => {
-            works = res.data;
-            // let work_index = 0;
-            // for (; work_index < data.length - 1; work_index++) {
-            //   works.push({
-            //     _id: data[work_index]._id,
-            //     workName: data[work_index].workName,
-            //     workIntro: data[work_index].workIntro,
-            //     authorAvatar: data[work_index].authorAvatar,
-            //     authorName: data[work_index].authorName,
-            //   });
-            // }
-          })
-          // .then((res) => {
-          //   skip.value += res["data"][res["work_index"]].limitNum;
-          //   ready4load = true; // 加载完之后开“锁”，允许下一次
-          // })
-          .catch((err) => {
-            if(err.response.status == 403){
-               toast.add({severity:'error', summary: '你得支棱起来呀', detail:'别再刷了，今天刷地够多了.',group: 'bl', life: 3000});
-               ready4load = false;
+            sql_data = res.data;
+            work_index = 0;
+            for (; work_index < sql_data.length - 1; work_index++) {
+              works.push({
+                _id: sql_data[work_index]._id,
+                workName: sql_data[work_index].workName,
+                workIntro: sql_data[work_index].workIntro,
+                authorAvatar: sql_data[work_index].authorAvatar,
+                authorName: sql_data[work_index].authorName,
+              });
             }
-          });
-        
-        // 获取作品图片
-        await axios 
-          .get("/api/retrieve/getWorkFile", {
-            params: {
-              skip: skip.value,
-            },
-          })
-          .then((res) => {
-            for(const [index,item] of res.data.entries()){
-              works[index]["workFile"] = item["workFile"]
-            }
-            // 将作品图片放进works里
-            // for (
-            //   let workFileIndex = skip.value, index=0;
-            //   workFileIndex < works.length;
-            //   workFileIndex++, index++
-            // ) {
-            //   works[workFileIndex]["workFile"] =
-            //     res.data[index]["workFile"];
-            // }
-            skip.value += works[works.length-1].limitNum;
             ready4load = true; // 加载完之后开“锁”，允许下一次
+          })
+          .catch((err) => {
+            if (err.response.status == 403) {
+              toast.add({
+                severity: "error",
+                summary: "木得了",
+                detail: "真的一张都不剩了",
+                group: "bl",
+                life: 3000,
+              });
+              ready4load = false;
+            }
           });
+
+        // 获取作品图片
+        !!ready4load &&
+          (await axios
+            .get("/api/retrieve/getWorkFile", {
+              params: {
+                skip: skip.value,
+              },
+            })
+            .then((res) => {
+              // 将作品图片放进works里
+              for (
+                let workFileIndex = skip.value, index = 0;
+                workFileIndex < works.length;
+                workFileIndex++, index++
+              ) {
+                works[workFileIndex]["workFile"] = res.data[index]["workFile"];
+              }
+              skip.value += sql_data[work_index].limitNum;
+              ready4load = true; // 加载完之后开“锁”，允许下一次
+            }));
       }
     };
 
-    await loadData()
-    
-    
-
-    
-
+    await loadData();
 
     const scrollHandler = function () {
       const scrollHeight = document.documentElement.scrollHeight; // 页面总高度
@@ -164,14 +160,10 @@ export default {
       const clientHeight = document.documentElement.clientHeight; // 可视区的高度
 
       const distance2bottom = scrollHeight - scrollTop - clientHeight; //可视区离页面底部的距离
-
-      if (distance2bottom < 500) {
+      if (distance2bottom < 1000) {
         loadData();
       }
     };
-
-    
-
 
     //三连
     const toggleTriple = (event) => {
@@ -190,11 +182,11 @@ export default {
     const poi_menu = [
       {
         label: "关注",
-        icon: "pi pi-plus"
+        icon: "pi pi-plus",
       },
       {
         label: "拉黑",
-        icon: "pi pi-eye-slash"
+        icon: "pi pi-eye-slash",
       },
     ];
 
@@ -209,113 +201,121 @@ export default {
 };
 </script>
 
-<style>
-.top-blank {
-  margin-bottom: 6rem;
-}
-.work-triple-container {
-  width: 53px;
-  margin-left: -50px;
-  text-align: right;
-  position: relative;
-}
-.work-triple {
-  position: absolute;
-  bottom: 2px;
-}
-.work-triple div {
-  position: relative;
-  padding-top: 20px;
-  width: 40px;
-  text-align: center;
-}
-.work-triple i {
-  font-size: 1.3rem;
-}
-.work-main-container {
-  position: relative;
-  margin: 0 auto;
-  background: var(--surface-e);
-  border-radius: 3px;
-  overflow: hidden;
-  border: 1px solid var(--surface-100);
-}
-.work-main-container .work-title {
-  border-bottom: 1px solid var(--surface-50);
-  height: 50px;
-  padding: 16px;
-  align-items: center;
-  line-height: 18px;
-  font-style: italic;
-  font-weight: bold;
-  font-size: 14px;
-}
+<style lang="sass">
+.top-blank
+  margin-bottom: 10rem
 
-.work-main-container .work-work img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.work-triple-container
+  width: 53px
+  margin-left: -50px
+  text-align: right
+  position: relative
 
-.work-comment-container {
-  margin-left: 10px;
-  position: relative;
-}
-.work-author {
-  border-bottom: 1px solid var(--surface-d);
-  padding: 4px 16px 4px 6px;
-}
-.work-author img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-}
+.work-triple
+  position: absolute
+  bottom: 2px
+
+
+  & div
+    position: relative
+    padding-top: 20px
+    width: 40px
+    text-align: center
+
+
+  & i
+    font-size: 1.3rem
+
+.work-main-container
+  position: relative
+  margin: 0 auto
+  background: var(--surface-e)
+  border-radius: 3px
+  overflow: hidden
+  border: 1px solid var(--surface-100)
+
+
+  & .work-title
+    border-bottom: 1px solid var(--surface-50)
+    height: 50px
+    padding: 16px
+    align-items: center
+    line-height: 18px
+    font-style: italic
+    font-weight: bold
+    font-size: 14px
+
+
+  & .work-work img
+    width: 100%
+    height: 100%
+    object-fit: cover
+
+.work-comment-container
+  margin-left: 10px
+  position: relative
+
+.work-author
+  border-bottom: 1px solid var(--surface-d)
+  padding: 4px 16px 4px 6px
+
+
+  & img
+    width: 32px
+    height: 32px
+    border-radius: 50%
+
 .author-head img,
 .author-name span,
-.author-operate {
-  cursor: pointer;
-}
-.author-name {
-  padding: 15px 0 0 3px;
-}
-.author-name span {
-  color: var(--primary-color);
-}
-.author-operate {
-  padding-top: 13px;
-}
-.work-info {
-  padding: 6px 0 6px 0;
-  color: #a2a2a2;
-}
-.work-info p {
-  font-size: 12px;
-}
-.work-comment {
-  border: 1px solid;
-  max-height: 50%;
-  margin-bottom: 10%;
-}
-.work-comment-input {
-  height: 50px;
-  width: 98%;
-  position: absolute;
-  bottom: 0;
-  border-bottom: 1px solid var(--surface-d);
-  display: flex;
-}
-.work-comment-input input {
-  width: 76%;
-  height: 100%;
-  background: var(--surface-b);
-  border: 0;
-  flex: 5;
-}
-.work-comment-input input:focus {
-  border: 0;
-  flex: 1;
-}
-.work-comment-input span {
-  font-weight: 400;
-}
+.author-operate
+  cursor: pointer
+
+.author-name
+  padding: 15px 0 0 3px
+
+
+  & span
+    color: var(--primary-color)
+
+.author-operate
+  padding-top: 13px
+
+.work-info
+  padding: 6px 0 6px 0
+  color: #a2a2a2
+
+
+  & p
+    font-size: 12px
+
+.work-comment
+  border: 1px solid
+  max-height: 50%
+  margin-bottom: 10%
+
+
+  &-input
+    height: 50px
+    width: 98%
+    position: absolute
+    bottom: 0
+    border-bottom: 1px solid var(--surface-d)
+    display: flex
+
+
+  &-input input
+    width: 76%
+    height: 100%
+    background: var(--surface-b)
+    border: 0
+    flex: 5
+
+
+  &-input input:focus
+    border: 0
+    flex: 1
+
+
+  &-input span
+    font-weight: 400
 </style>

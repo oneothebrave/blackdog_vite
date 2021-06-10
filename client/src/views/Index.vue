@@ -1,31 +1,32 @@
 <template>
   <Nav />
-  <!-- <div class="contents"> -->
-  <Suspense>
-    <template #default>
-        <WorkBox />
-    </template>
-    <template #fallback>
-        Loading...
-    </template>
-  </Suspense>
-  
-    
-  <!-- </div> -->
+    <!-- vue3的异步加载组建  default插槽放的是异步加载完成后的数据   fallback插槽放的是在加载时显示的内容。比如骨架屏 -->
+    <Suspense>  
+      <template #default>
+          <WorkBox />
+      </template>
+      <template #fallback>
+          <SkeletonIndex />
+      </template>
+    </Suspense>
 </template>
 
 <script>
+import SkeletonIndex from "../components/SkeletonIndex.vue"
 import Nav from "../components/Nav.vue";
 import WorkBox from "../components/WorkBox.vue";
 import { onBeforeMount } from 'vue';
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 export default {
   components: {
     Nav,
-    WorkBox
+    WorkBox,
+    SkeletonIndex
   },
   setup() {
+    const router = useRouter();
     onBeforeMount(() => {
       axios
         .get("/api/user/auth", {

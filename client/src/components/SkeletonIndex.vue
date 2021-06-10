@@ -1,97 +1,162 @@
+<template>
+  <div class="p-grid top-blank">
+    <section class="p-col-1 work-triple-container">
+      <div class="work-triple">
+        <div>
+          <Button
+            class="p-button-rounded p-button-outlined"
+          />
+        </div>
+        <div>
+          <Button
+            class="p-button-rounded p-button-outlined"
+          />
+        </div>
+        <div>
+          <Button
+            class="p-button-rounded p-button-outlined"
+          />
+        </div>
+      </div>
+    </section>
+    <section class="p-col-8 work-main-container">
+      <div class="work-title"></div>
+      <div class="work-work">
+        <!-- <img :src="workFile.url" /> -->
+      </div>
+    </section>
+    <section class="p-col work-comment-container">
+      <div class="work-author p-grid">
+        <div class="author-head p-col-fixed"></div>
+        <div class="author-name p-col p-text-left">
+          <span></span>
+        </div>
+        <div class="author-operate p-col-1">
+          <i class="pi pi-ellipsis-h"></i>
+        </div>
+      </div>
+      <div class="work-info p-text-left">
+        <ScrollPanel style="width: 100%; max-height: 120px">
+          <p></p>
+        </ScrollPanel>
+      </div>
+    </section>
+  </div>
+</template>
 
 <script>
-  import { ContentLoader } from "vue-content-loader"
-    import Nav from "./Nav.vue";
-
-  export default {
-    components: { ContentLoader,Nav }
-  }
+export default {};
 </script>
 
-<template>
-<Nav/>
-  <content-loader
-    :width="1040"
-    :height="2300"
-    :speed="2"
-    primaryColor="#f3f3f3"
-    secondaryColor="#ecebeb"
-    style="margin-top:85px"
-  >
-    <!-- 第一个 -->
-    <!-- 三连 -->
-    <circle cx="20" cy="540" r="20" /> 
-    <circle cx="20" cy="600" r="20" /> 
-    <circle cx="20" cy="660" r="20" /> 
-    <!-- 图片标题外面的框 -->
-    <rect x="45" y="0" rx="2" ry="2" width="625" height="1" /> 
-    <rect x="45" y="680" rx="2" ry="2" width="625" height="1" /> 
-    <rect x="45" y="0" rx="2" ry="2" width="1" height="680" /> 
-    <rect x="670" y="0" rx="2" ry="2" width="1" height="680" /> 
-    <!-- 标题，分割线，图片 -->
-    <rect x="258" y="23" rx="6" ry="6" width="200" height="20" /> 
-    <rect x="54" y="58" rx="0" ry="0" width="608" height="1" /> 
-    <rect x="54" y="59" rx="0" ry="0" width="608" height="608" /> 
-    <!-- 作者头像，名字，点点点，分割线 -->
-    <circle cx="710" cy="34" r="16" /> 
-    <rect x="730" y="28" rx="2" ry="2" width="160" height="14" /> 
-    <rect x="950" y="30" rx="2" ry="2" width="30" height="10" />
-    <rect x="690" y="58" rx="0" ry="0" width="300" height="1" /> 
-    <!-- 作品简介 -->
-    <rect x="690" y="80" rx="2" ry="2" width="300" height="5" /> 
-    <rect x="690" y="100" rx="2" ry="2" width="300" height="5" /> 
-    <rect x="690" y="120" rx="2" ry="2" width="300" height="5" /> 
-    <rect x="690" y="140" rx="2" ry="2" width="30" height="5" /> 
+<style lang="sass" scoped>
+.top-blank
+    margin-bottom: 6rem
+
+.work-triple-container
+    width: 53px
+    margin-left: -50px
+    text-align: right
+    position: relative
+
+.work-triple
+    position: absolute
+    bottom: 2px
+    div
+        position: relative
+        padding-top: 20px
+        width: 40px
+
+        button
+            border: 0
+            animation: trans-bg 1s infinite
+
+.work-main-container
+    position: relative
+    margin: 0 auto
+    background: var(--surface-e)
+    border-radius: 3px
+    overflow: hidden
+    border: 1px solid var(--surface-100)
 
 
-    <!-- 第二个 -->
-    <!-- 三连 -->
-    <circle cx="20" cy="1320" r="20" /> 
-    <circle cx="20" cy="1380" r="20" /> 
-    <circle cx="20" cy="1440" r="20" /> 
-    <!-- 图片标题外面的框 -->
-    <rect x="45" y="780" rx="2" ry="2" width="625" height="1" /> 
-    <rect x="45" y="1460" rx="2" ry="2" width="625" height="1" /> 
-    <rect x="45" y="780" rx="2" ry="2" width="1" height="680" /> 
-    <rect x="670" y="780" rx="2" ry="2" width="1" height="680" /> 
-    <!-- 标题，分割线，图片 -->
-    <rect x="258" y="803" rx="6" ry="6" width="200" height="20" /> 
-    <rect x="54" y="838" rx="0" ry="0" width="608" height="1" /> 
-    <rect x="54" y="839" rx="0" ry="0" width="608" height="608" /> 
-    <!-- 作者头像，名字，点点点，分割线 -->
-    <circle cx="710" cy="814" r="16" /> 
-    <rect x="730" y="808" rx="2" ry="2" width="160" height="14" /> 
-    <rect x="950" y="810" rx="2" ry="2" width="30" height="10" />
-    <rect x="690" y="838" rx="0" ry="0" width="300" height="1" /> 
-    <!-- 作品简介 -->
-    <rect x="690" y="860" rx="2" ry="2" width="300" height="5" /> 
-    <rect x="690" y="880" rx="2" ry="2" width="300" height="5" /> 
-    <rect x="690" y="900" rx="2" ry="2" width="300" height="5" /> 
-    <rect x="690" y="920" rx="2" ry="2" width="30" height="5" /> 
+    .work-title
+        border-bottom: 1px solid var(--surface-50)
+        height: 30px
+        padding: 16px
+        align-items: center
+        line-height: 18px
+        width: 30%
+        margin: 0 auto
+        border-radius: 3px
+        animation: trans-bg 1s infinite
 
-    <!-- 第三个 -->
-    <!-- 三连 -->
-    <circle cx="20" cy="2100" r="20" /> 
-    <circle cx="20" cy="2160" r="20" /> 
-    <circle cx="20" cy="2220" r="20" /> 
-    <!-- 图片标题外面的框 -->
-    <rect x="45" y="1560" rx="2" ry="2" width="625" height="1" /> 
-    <rect x="45" y="2240" rx="2" ry="2" width="625" height="1" /> 
-    <rect x="45" y="1560" rx="2" ry="2" width="1" height="680" /> 
-    <rect x="670" y="1560" rx="2" ry="2" width="1" height="680" /> 
-    <!-- 标题，分割线，图片 -->
-    <rect x="258" y="1583" rx="6" ry="6" width="200" height="20" /> 
-    <rect x="54" y="1618" rx="0" ry="0" width="608" height="1" /> 
-    <rect x="54" y="1619" rx="0" ry="0" width="608" height="608" /> 
-    <!-- 作者头像，名字，点点点，分割线 -->
-    <circle cx="710" cy="1594" r="16" /> 
-    <rect x="730" y="1588" rx="2" ry="2" width="160" height="14" /> 
-    <rect x="950" y="1590" rx="2" ry="2" width="30" height="10" />
-    <rect x="690" y="1618" rx="0" ry="0" width="300" height="1" /> 
-    <!-- 作品简介 -->
-    <rect x="690" y="1640" rx="2" ry="2" width="300" height="5" /> 
-    <rect x="690" y="1660" rx="2" ry="2" width="300" height="5" /> 
-    <rect x="690" y="1680" rx="2" ry="2" width="300" height="5" /> 
-    <rect x="690" y="1700" rx="2" ry="2" width="30" height="5" /> 
-  </content-loader>
-</template>
+
+    .work-work 
+        height:500px
+        img
+            width: 100%
+            height: 100%
+            object-fit: cover
+
+.work-comment-container
+    margin-left: 10px
+    position: relative
+
+    .work-author
+        border-bottom: 1px solid var(--surface-d)
+        padding: 4px 16px 4px 6px
+        img
+            width: 32px
+            height: 32px
+            border-radius: 50%
+
+        .author-head img,
+        .author-name span,
+        .author-operate
+            cursor: pointer
+
+        .author-name
+            padding: 15px 0 0 3px
+            span
+                color: var(--primary-color)
+
+        .author-operate
+            padding-top: 13px
+
+        .work-info
+            padding: 6px 0 6px 0
+            color: #a2a2a2
+            p
+                font-size: 12px
+
+.work-comment
+    border: 1px solid
+    max-height: 50%
+    margin-bottom: 10%
+
+
+    input
+        height: 50px
+        width: 98%
+        position: absolute
+        bottom: 0
+        border-bottom: 1px solid var(--surface-d)
+        display: flex
+
+
+    input 
+        input
+            width: 76%
+            height: 100%
+            background: var(--surface-b)
+            border: 0
+            flex: 5
+
+
+    input 
+        input:focus
+            border: 0
+            flex: 1
+
+
+</style>

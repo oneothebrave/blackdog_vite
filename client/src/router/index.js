@@ -23,6 +23,11 @@ const routes = [
     name: 'Sk',
     component: () => import('../components/SkeletonIndex.vue')
   },
+  {
+    path: '/skm',
+    name: 'SkM',
+    component: () => import('../components/SkeletonIndexManual.vue')
+  },
 ]
 
 const router = createRouter({

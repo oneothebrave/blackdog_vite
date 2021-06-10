@@ -323,7 +323,7 @@ export default {
   top: 0;
   right: 0;
   left: 0;
-  height: 54px;
+  height: 4rem;
   border-bottom: 1px solid var(--surface-d);
   justify-content: space-between;
   align-items: center;

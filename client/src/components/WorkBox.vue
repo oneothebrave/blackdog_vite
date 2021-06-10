@@ -33,16 +33,16 @@
       </div>
       <div class="work-work">
         <!-- <img :src="workFile.url" /> -->
-        <img v-lazyload="work.workFile.url" v-show="work.workFile.url"/>
+        <img v-lazyload="work.workFile" v-show="work.workFile"/>
       </div>
     </section>
     <section class="p-col work-comment-container">
       <div class="work-author p-grid">
         <div class="author-head p-col-fixed">
-          <img :src="work.workAuthorAvatar" />
+          <img :src="work.authorAvatar" />
         </div>
         <div class="author-name p-col p-text-left">
-          <span>{{ work.workAuthorName }}</span>
+          <span>{{ work.authorName }}</span>
         </div>
         <div class="author-operate p-col-1" @click="togglePoi">
           <i class="pi pi-ellipsis-h"></i>
@@ -69,67 +69,50 @@
 </template>
 
 <script>
-import { onBeforeMount, onMounted, onUpdated, onUnmounted,watchEffect, reactive, ref } from "vue";
-import { useRouter } from "vue-router";
+import { onMounted , onUnmounted, reactive, ref } from "vue";
 import axios from "axios";
 import { useToast } from "primevue/usetoast";
 // import { toRefs } from 'vue';
 export default {
   async setup() {
-    const router = useRouter();
-    const works = reactive([]);
     let ready4load = true;
     let skip = ref(0);
     const toast = useToast();
-    
-    
+    let works = null;
+
+    onMounted(() => {
+      window.addEventListener("scroll", scrollHandler, false);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("scroll", scrollHandler, false);
+    });
+
 
      // 获取数据
-    const loadData = await function() {
+    const loadData = async function() {
       if (ready4load) {
         // 需要加载才能进来，进来就“锁”上
         ready4load = false;
         // 获取作品除了图片之外的其他信息
-        axios
+        await axios
           .get("/api/retrieve/getBasic", {
             params: {
               skip: skip.value,
             },
           })
           .then(async (res) => {
-            const data = res.data;
-            let work_index = 0;
-            for (; work_index < data.length - 1; work_index++) {
-              works.push({
-                _id: data[work_index]._id,
-                workName: data[work_index].workName,
-                workIntro: data[work_index].workIntro,
-                authorAvatar: data[work_index].authorAvatar,
-                authorName: data[work_index].authorName,
-              });
-            }
-
-            // 获取作品图片
-            await axios // 防止这个还没跑完就去执行下面的then
-              .get("/api/retrieve/getWorkFile", {
-                params: {
-                  skip: skip.value,
-                },
-              })
-              .then((res) => {
-                // 将作品图片放进works里
-                for (
-                  let workFileIndex = skip.value, index=0;
-                  workFileIndex < works.length;
-                  workFileIndex++, index++
-                ) {
-                  works[workFileIndex]["workFile"] =
-                    res.data[index]["workFile"];
-                }
-                skip.value += data[work_index].limitNum;
-                ready4load = true; // 加载完之后开“锁”，允许下一次
-              });
-           
+            works = res.data;
+            // let work_index = 0;
+            // for (; work_index < data.length - 1; work_index++) {
+            //   works.push({
+            //     _id: data[work_index]._id,
+            //     workName: data[work_index].workName,
+            //     workIntro: data[work_index].workIntro,
+            //     authorAvatar: data[work_index].authorAvatar,
+            //     authorName: data[work_index].authorName,
+            //   });
+            // }
           })
           // .then((res) => {
           //   skip.value += res["data"][res["work_index"]].limitNum;
@@ -141,8 +124,38 @@ export default {
                ready4load = false;
             }
           });
+        
+        // 获取作品图片
+        await axios 
+          .get("/api/retrieve/getWorkFile", {
+            params: {
+              skip: skip.value,
+            },
+          })
+          .then((res) => {
+            for(const [index,item] of res.data.entries()){
+              works[index]["workFile"] = item["workFile"]
+            }
+            // 将作品图片放进works里
+            // for (
+            //   let workFileIndex = skip.value, index=0;
+            //   workFileIndex < works.length;
+            //   workFileIndex++, index++
+            // ) {
+            //   works[workFileIndex]["workFile"] =
+            //     res.data[index]["workFile"];
+            // }
+            skip.value += works[works.length-1].limitNum;
+            ready4load = true; // 加载完之后开“锁”，允许下一次
+          });
       }
     };
+
+    await loadData()
+    
+    
+
+    
 
 
     const scrollHandler = function () {
@@ -157,14 +170,7 @@ export default {
       }
     };
 
-    onMounted(() => {
-      loadData();
-      window.addEventListener("scroll", scrollHandler, false);
-    });
-
-    onUnmounted(() => {
-      window.removeEventListener("scroll", scrollHandler, false);
-    });
+    
 
 
     //三连

@@ -136,7 +136,6 @@ export default {};
         span
           display: block
           margin-top: 5px
-          float:left
           height: 6px
           width: 20%
           animation: trans-bg 1s infinite

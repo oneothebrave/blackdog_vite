@@ -41,18 +41,6 @@ export default {
           });
         });
     });
-
-    // const works = [
-    //     {"_id": 1, "workName": "el3", "workFile": "/static/el3.jpg", "authorAvatar": "/static/el3.jpg", "authorName": "mario9", "workIntro": "This one takes the cake for the sheer number of “thirteen ways of looking at x” knockoffs that I’ve seen. But please see also: “The Emperor of Ice-Cream.”"},
-    //     {"_id": 2, "workName": "el2", "workFile": "/static/el2.jpg", "authorAvatar": "/static/el2.jpg", "authorName": "mario8", "workIntro": "To be quite honest, my favorite Plath poem is “The Applicant.” But “Daddy” is still the most iconic, especially if you’ve ever heard her read it aloud."},
-    //     {"_id": 3, "workName": "el1", "workFile": "/static/el1.jpg", "authorAvatar": "/static/el1.jpg", "authorName": "mario7", "workIntro": "One of the defining works of the Harlem Renaissance, by its greatest poet. It also, of course, gave inspiration and lent a workName to another literary classic: Lorraine Hansberry’s A Raisin in the Sun."},
-    //     {"_id": 4, "workName": "l2", "workFile": "/static/l2.jpg", "authorAvatar": "/static/l2.jpg", "authorName": "mario6", "workIntro": "The truth is, there are lots of equally iconic Dickinson poems, so consider this a stand-in for them all. Though, as Jay Parini has noted, this poem is perfect, “one of Dickinson’s most compressed and chilling attempts to come to terms with mortality.”"},
-    //     {"_id": 5, "workName": "阿尔卑斯山", "workFile": "/static/l1.jpg", "authorAvatar": "/static/l1.jpg", "authorName": "mario5", "workIntro": "Bishop’s much loved and much discussed ode to loss, which Claudia Roth Pierpont called “a triumph of control, understatement, wit. Even of self-mockery, in the poetically pushed rhyme word “vaster,” and the ladylike, pinkies-up “shan’t.” An exceedingly rare mention of her mother—as a woman who once owned a watch. A continent standing in for losses larger than itself.”"},
-    //     {"_id": 6, "workName": "m2", "workFile": "/static/m2.jpg", "authorAvatar": "/static/m2.jpg", "authorName": "mario4", "workIntro": "This blew my mind in high school, and I wasn’t the only one."},
-    //     {"_id": 7, "workName": "m1", "workFile": "/static/m1.jpg", "authorAvatar": "/static/m1.jpg", "authorName": "mario3", "workIntro": "Otherwise known as “the most misread poem in America.” See also: “Stopping by Woods on a Snowy Evening.” And “Birches.” All begin in delight and end in wisdom, as Frost taught us great poems should."},
-    //     {"_id": 8, "workName": "s2", "workFile": "/static/s2.jpg", "authorAvatar": "/static/s2.jpg", "authorName": "mario2", "workIntro": "Without a doubt one of the most important poems of the 20th century. “It has never lost its glamour,” Paul Muldoon observed. “It has never failed to be equal to both the fracture of its own era and what, alas, turned out to be the even greater fracture of the ongoing 20th century and now, it seems, the 21st century.” See also: “The Love Song of J. Alfred Prufrock.”"},
-    //     {"_id": 9, "workName": "s1", "workFile": "/static/s1.jpg", "authorAvatar": "/static/s1.jpg", "authorName": "mario", "workIntro": "The most anthologized poem of the last 25 years for a reason. See also: “This is Just to Say,” which, among other things, has spawned a host of memes and parodies."}
-    // ];
     return {
       
     }

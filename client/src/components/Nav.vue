@@ -1,19 +1,21 @@
 <template>
   <!--图片全屏预览 -->
   <!-- <div style="height: 7rem"></div> -->
-  <Toast/>
+  <Toast />
   <header class="p-d-flex nav-bar">
     <div class="p-grid p-jc-between nav">
       <!-- 名称 -->
       <div class="p-col-2 p-text-left">
-        <router-link to="/index" class="nav-log p-text-italic p-text-bold">BlackDog</router-link>
+        <router-link to="/index" class="nav-log p-text-italic p-text-bold"
+          >BlackDog</router-link
+        >
       </div>
       <div class="p-col-1"></div>
       <!-- 功能 -->
       <div class="p-col-4 p-text-right">
         <div class="p-d-inline-flex nav-func">
           <div class="p-mr-2 p-order-3 p-order-md-3">
-            <Button icon="pi pi-comments" class="p-button-rounded p-button"/>
+            <Button icon="pi pi-comments" class="p-button-rounded p-button" />
           </div>
           <div class="p-mr-2 p-order-3 p-order-md-3">
             <Button
@@ -33,12 +35,23 @@
                   <div class="p-fluid">
                     <div class="p-field">
                       <label for="workName"><h5>作品名称</h5></label>
-                      <InputText id="workName" type="text" maxlength="20" v-model="workName" />
+                      <InputText
+                        id="workName"
+                        type="text"
+                        maxlength="20"
+                        v-model="workName"
+                      />
                     </div>
                     <div class="p-field">
                       <label for="workUpload"><h5>上传作品</h5></label>
                       <!-- <FileUpload mode="basic" url="/api/upload/uploadWorkFile" accept="image/*" :maxFileSize="1000000" @upload="onUpload" chooseLabel="Browse" /> -->
-                      <input type="file"  id="workUpload" accept="image/*" name="workUpload" @change="getWorkFile"/>
+                      <input
+                        type="file"
+                        id="workUpload"
+                        accept="image/*"
+                        name="workUpload"
+                        @change="getWorkFile"
+                      />
                     </div>
                     <div class="p-field">
                       <label for="workIntro"><h5>作品简介</h5></label>
@@ -64,7 +77,10 @@
                 <Button
                   label="发布"
                   icon="pi pi-check"
-                  @click="releaseWork();closeDialog()"
+                  @click="
+                    releaseWork();
+                    closeDialog();
+                  "
                   class="p-button-text"
                 />
               </template>
@@ -86,98 +102,96 @@ import axios from "axios";
 import { getCookie } from "../composable/js/cookieHandler";
 import { useToast } from "primevue/usetoast";
 export default {
-    setup(){
-        const displayDialog = ref(false);
-        const workName = ref("");
-        let workFile = null;
-        const workIntro = ref("");
-        const userAvatar = ref(""); // 为什么简单地用let userAvatar = null. 不行
-        const toast = useToast();
-        onBeforeMount(() => {
-            axios
-                .get("/api/user/getAvatar",
-                {
-                    headers: {"email": getCookie("email")}
-                })
-                .then((response) => {
-                    userAvatar.value = response.data
-                })
+  setup() {
+    const displayDialog = ref(false);
+    const workName = ref("");
+    let workFile = null;
+    const workIntro = ref("");
+    const userAvatar = ref(""); // 为什么简单地用let userAvatar = null. 不行
+    const toast = useToast();
+    onBeforeMount(() => {
+      axios
+        .get("/api/user/getAvatar", {
+          headers: { email: getCookie("email") },
+        })
+        .then((response) => {
+          userAvatar.value = response.data;
         });
+    });
 
+    // // 个人
+    // toggleUserMenu(event) {
+    //     this.$refs.user_menu.toggle(event);
+    // };
 
-        // // 个人
-        // toggleUserMenu(event) {
-        //     this.$refs.user_menu.toggle(event);
-        // };
+    //打开弹出框
+    const openDialog = () => {
+      displayDialog.value = true;
+    };
 
-        //打开弹出框
-        const openDialog = () => {
-            displayDialog.value = true
-        };
+    //关闭弹出框
+    const closeDialog = () => {
+      displayDialog.value = false;
+    };
 
-        //关闭弹出框
-        const closeDialog = () => {
-            displayDialog.value = false;
-            
-        };
+    // 上传图片的文件监听器
+    const getWorkFile = (event) => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        workFile = this.result;
+      };
+      reader.readAsArrayBuffer(event.target.files[0]);
+    };
 
-        // 上传图片的文件监听器
-        const getWorkFile = (event) => {
-            const reader = new FileReader();
-            reader.onload = function(){
-                workFile = this.result
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        };
+    // 发布作品
+    const releaseWork = () => {
+      const formData = new FormData();
+      formData.append("workName", workName.value);
+      formData.append("workFile", workFile);
+      formData.append("workIntro", workIntro.value);
+      axios
+        .post(
+          "/api/upload/",
+          // {
+          //   formData
+          //     // workName: workName.value,
+          //     // workFile: workFile,
+          //     // workIntro: workIntro.value
+          // },
+          formData,
+          {
+            headers: {
+              "auth-token": localStorage["auth-token"],
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((response) => {
+          toast.add({
+            severity: "success",
+            summary: "成功",
+            detail: "作品已上传",
+            life: 3000,
+          });
+        })
+        .catch((err) => {
+          debugger;
+        });
+    };
 
-        // 发布作品
-        const releaseWork = () => {
-            console.log("releasing  Work....");
-            const formData = new FormData();
-            formData.append("workName", workName.value);
-            formData.append("workFile", workFile);
-            formData.append("workIntro", workIntro.value);
-            axios
-                .post("/api/upload/",
-                // {
-                //   formData
-                //     // workName: workName.value,
-                //     // workFile: workFile,
-                //     // workIntro: workIntro.value
-                // },
-                formData,
-                {
-                    headers: {
-                        "auth-token": localStorage["auth-token"],
-                        "Content-Type":"multipart/form-data"
-                      }
-                })
-                .then((response) => {
-                    toast.add({severity:'success', summary: '成功', detail:'作品已上传', life: 3000});
-                })
-                .catch((err) => {
-                    debugger
-                })
-
-
-        };
-       
-
-        return {
-            displayDialog,
-            // toggleUserMenu,
-            openDialog,
-            closeDialog,
-            getWorkFile,
-            releaseWork,
-            workName,
-            workIntro,
-            userAvatar
-        }
-    }
-
+    return {
+      displayDialog,
+      // toggleUserMenu,
+      openDialog,
+      closeDialog,
+      getWorkFile,
+      releaseWork,
+      workName,
+      workIntro,
+      userAvatar,
+    };
+  },
 };
-
 
 //   data() {
 //     return {
@@ -208,7 +222,7 @@ export default {
 //   },
 
 //   methods: {
-    
+
 //     //打开弹出框
 //     openDialog() {
 //       this.displayDialog = true;

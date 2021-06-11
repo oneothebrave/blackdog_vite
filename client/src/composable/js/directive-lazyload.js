@@ -28,7 +28,6 @@ function loadImage(el, imgSrc){
 
 export default{
     mounted(el, binding){
-        console.log("mounter")
         // 初始化时展示默认图片
         el.src = placeholder64;
         //将需要加载的图片地址绑定在dom上
@@ -39,7 +38,6 @@ export default{
 
     //图片更新触发
     updated(el, binding){
-        console.log("updated")
         el.isLoaded = false;
         el.data_src = binding.value
     }

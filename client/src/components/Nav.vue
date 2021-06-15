@@ -88,7 +88,7 @@
           </div>
           <div class="p-mr-2 p-order-3 p-order-md-3 head-image">
             <img :src="userAvatar" @click="toggleUserMenu" />
-            <!-- <TieredMenu ref="user_menu" :model="user_menu" :popup="true" /> -->
+            <TieredMenu ref="user_menu_btn" :model="user_menu" :popup="true" />
           </div>
         </div>
       </div>
@@ -110,6 +110,22 @@ export default {
     const workIntro = ref("");
     const userAvatar = ref(""); // 为什么简单地用let userAvatar = null. 不行
     const toast = useToast();
+    const user_menu = ref([
+        {
+          label: "个人主页",
+          icon: "pi pi-fw pi-user",
+          to: "/user",
+        },
+        {
+          separator: true,
+        },
+        {
+          label: "退出",
+          icon: "pi pi-fw pi-sign-out",
+          to: "/login",
+        },
+      ]);
+    const user_menu_btn = ref(null)
     onBeforeMount(() => {
       axios
         .get("/api/user/getAvatar", {
@@ -121,9 +137,9 @@ export default {
     });
 
     // // 个人
-    // toggleUserMenu(event) {
-    //     this.$refs.user_menu.toggle(event);
-    // };
+    const toggleUserMenu = function(event) {
+        user_menu_btn.value.toggle(event);
+    };
 
     //打开弹出框
     const openDialog = () => {
@@ -157,12 +173,6 @@ export default {
       axios
         .post(
           "/api/upload/",
-          // {
-          //   formData
-          //     // workName: workName.value,
-          //     // workFile: workFile,
-          //     // workIntro: workIntro.value
-          // },
           formData,
           {
             headers: {
@@ -186,7 +196,7 @@ export default {
 
     return {
       displayDialog,
-      // toggleUserMenu,
+      toggleUserMenu,
       openDialog,
       closeDialog,
       getWorkFile,
@@ -194,10 +204,11 @@ export default {
       workName,
       workIntro,
       userAvatar,
+      user_menu,
+      user_menu_btn
     };
   },
 };
-
 //   data() {
 //     return {
 //       // 默认是否显示图片放大器

@@ -59,16 +59,16 @@
             </p>
         </ScrollPanel> -->
       </div>
-      <div class="work-comment-input">
+      <!-- <div class="work-comment-input">
         <InputText type="text" placeholder="添加评论..." />
         <Button label="发送" class="p-button-text" />
-      </div>
+      </div> -->
     </section>
   </div>
 </template>
 
 <script>
-import { onMounted, onUnmounted, reactive, ref, watchEffect } from "vue";
+import { onMounted, onUnmounted, reactive, ref} from "vue";
 import axios from "axios";
 import { useToast } from "primevue/usetoast";
 // import { toRefs } from 'vue';

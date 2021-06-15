@@ -58,7 +58,7 @@ export default {
     // 登录界面背景用bd.jpg，切换到其他界面要换背景为纯色
     document.querySelector('html').setAttribute('style', 'background: url("/static/bd.jpg"); background-size: cover');
     onBeforeUnmount(()=>{
-      document.querySelector('html').setAttribute('style', 'background: var(--surface-b)');
+      document.querySelector('html').setAttribute('style', 'background: #181818');
     });
 
     const email = ref("");  // 邮箱输入框

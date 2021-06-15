@@ -32,7 +32,6 @@
         {{ work.workName }}
       </div>
       <div class="work-work">
-        <!-- <img :src="workFile.url" /> -->
         <img v-lazyload="work.workFile" />
       </div>
     </section>
@@ -160,7 +159,7 @@ export default {
       const clientHeight = document.documentElement.clientHeight; // 可视区的高度
 
       const distance2bottom = scrollHeight - scrollTop - clientHeight; //可视区离页面底部的距离
-      if (distance2bottom < 1000) {
+      if (distance2bottom < 800) {
         loadData();
       }
     };
@@ -229,14 +228,14 @@ export default {
 .work-main-container
   position: relative
   margin: 0 auto
-  background: var(--surface-e)
+  background: #212121
   border-radius: 3px
   overflow: hidden
-  border: 1px solid var(--surface-100)
+  border: 1px solid #212121
 
 
   & .work-title
-    border-bottom: 1px solid var(--surface-50)
+    border-bottom: 1px solid #212121
     height: 50px
     padding: 16px
     align-items: center
@@ -244,6 +243,7 @@ export default {
     font-style: italic
     font-weight: bold
     font-size: 14px
+    color: var(--primary-color-text)
 
 
   & .work-work img
@@ -256,7 +256,7 @@ export default {
   position: relative
 
 .work-author
-  border-bottom: 1px solid var(--surface-d)
+  border-bottom: 1px solid #303030
   padding: 4px 16px 4px 6px
 
 
@@ -282,14 +282,13 @@ export default {
 
 .work-info
   padding: 6px 0 6px 0
-  color: #a2a2a2
+  color: #aaaaaa
 
 
   & p
     font-size: 12px
 
 .work-comment
-  border: 1px solid
   max-height: 50%
   margin-bottom: 10%
 
@@ -299,14 +298,14 @@ export default {
     width: 98%
     position: absolute
     bottom: 0
-    border-bottom: 1px solid var(--surface-d)
+    border-bottom: 1px solid #303030
     display: flex
 
 
   &-input input
     width: 76%
     height: 100%
-    background: var(--surface-b)
+    background: #181818
     border: 0
     flex: 5
 

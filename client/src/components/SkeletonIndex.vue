@@ -71,15 +71,15 @@ export default {};
 .work-main-container
     position: relative
     margin: 0 auto
-    background: var(--surface-e)
+    background: #212121
     border-radius: 3px
     overflow: hidden
-    border: 1px solid var(--surface-100)
+    border: 1px solid #212121
 
 
     .work-title
-        border-bottom: 1px solid var(--surface-50)
-        height: 20px
+        border-bottom: 1px solid #212121
+        height: 30px
         padding: 10px
         align-items: center
         line-height: 18px
@@ -98,8 +98,8 @@ export default {};
     position: relative
 
     .work-author
-        border-bottom: 1px solid var(--surface-d)
-        padding: 4px 16px 4px 6px
+        border-bottom: 1px solid #303030
+        padding: 11px 16px 17px 10px
 
         .author-head img,
         .author-name span,

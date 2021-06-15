@@ -1,7 +1,7 @@
 //导入占位符图片
 // import phImg from "/static/placeholder.png"
 
-const placeholder64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAATSURBVBhXYzh8+PB/dEx9wcP/AcszUgk9YL2cAAAAAElFTkSuQmCC"
+const placeholder64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAASSURBVBhXY9DU1PwPwlCG5n8AMDYF6T2f80QAAAAASUVORK5CYII="
 
 //创建一个监听器
 let intersectionObserver = new IntersectionObserver((entries) => {

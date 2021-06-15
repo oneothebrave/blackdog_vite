@@ -106,6 +106,7 @@ export default {
     const displayDialog = ref(false);
     const workName = ref("");
     let workFile = null;
+    let workFileName = "";
     const workIntro = ref("");
     const userAvatar = ref(""); // 为什么简单地用let userAvatar = null. 不行
     const toast = useToast();
@@ -137,10 +138,13 @@ export default {
     // 上传图片的文件监听器
     const getWorkFile = (event) => {
       const reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      // 时间戳+文件名作为上传到服务器的文件名（可能会有相同的情况出现，只能说有缘！）
+      workFileName += new Date().getTime() + event.target.files[0].name;
+
       reader.onload = function (e) {
         workFile = this.result;
       };
-      reader.readAsArrayBuffer(event.target.files[0]);
     };
 
     // 发布作品
@@ -148,6 +152,7 @@ export default {
       const formData = new FormData();
       formData.append("workName", workName.value);
       formData.append("workFile", workFile);
+      formData.append("workFileName", workFileName);
       formData.append("workIntro", workIntro.value);
       axios
         .post(
@@ -330,47 +335,48 @@ export default {
 //   },
 </script>
 
-<style scoped>
-.nav-bar {
-  position: fixed;
-  z-index: 998;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 4rem;
-  border-bottom: 1px solid var(--surface-d);
-  justify-content: space-between;
-  align-items: center;
-  transition: height 0.2s ease-in-out;
-  padding: 0.7rem 1.5rem;
-  background-color: var(--surface-e);
-}
-.nav {
-  align-items: center;
-  transition: height 0.2s ease-in-out;
-  max-width: 965px;
-  width: 100%;
-  margin: 0 auto;
-}
-.nav-log {
-  color: var(--text-color);
-  text-decoration: none;
-}
-.nav-func i,
-img {
-  cursor: pointer;
-}
-.head-image img {
-  width: 2.36rem;
-  height: auto;
-  border-radius: 50%;
-}
-.pi {
-  font-size: 1.2rem;
-}
-.single_pic_shower {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+<style lang="sass" scoped>
+.nav-bar
+  position: fixed
+  z-index: 998
+  top: 0
+  right: 0
+  left: 0
+  height: 4rem
+  border-bottom: 1px solid #212121
+  justify-content: space-between
+  align-items: center
+  transition: height 0.2s ease-in-out
+  padding: 0.7rem 1.5rem
+  background-color: #212121
+
+.nav
+  align-items: center
+  transition: height 0.2s ease-in-out
+  max-width: 965px
+  width: 100%
+  margin: 0 auto
+
+
+  &-log
+    color: var(--primary-color-text)
+    text-decoration: none
+
+
+  &-func i,
+img
+  cursor: pointer
+
+.head-image img
+  width: 2.36rem
+  height: auto
+  border-radius: 50%
+
+.pi
+  font-size: 1.2rem
+
+.single_pic_shower
+  width: 100%
+  height: 100%
+  object-fit: cover
 </style>

@@ -6,6 +6,7 @@
 5. jsonwebtoken： 设置token
 6. morgan： express的logger中间件
 7. nodemon: node monitor  每次保存后台代码时若有改动，都会自动restart服务
+8. fs ： 操作文件
 
 
 

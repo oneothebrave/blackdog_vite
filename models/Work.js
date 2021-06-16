@@ -19,6 +19,14 @@ const workSchema = new Schema({
         type: String,
         required: true
     },
+    workFileWidth: {
+        type: Number,
+        required: true
+    },
+    workFileHeight: {
+        type: Number,
+        required: true
+    },
     userId: {
         type: Schema.Types.ObjectId,
         required: true

@@ -3,10 +3,10 @@
     <!-- vue3的异步加载组建  default插槽放的是异步加载完成后的数据   fallback插槽放的是在加载时显示的内容。比如骨架屏 -->
     <Suspense>  
       <template #default>
-          <WorkBox />
+          <WorkBox :worksInfo="worksInfo" />
       </template>
       <template #fallback>
-          <SkeletonIndex />
+          <SkeletonIndex/>
       </template>
     </Suspense>
 </template>
@@ -15,7 +15,7 @@
 import SkeletonIndex from "../components/SkeletonIndex.vue"
 import Nav from "../components/Nav.vue";
 import WorkBox from "../components/WorkBox.vue";
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, reactive } from 'vue';
 import axios from "axios";
 import { useRouter } from "vue-router";
 
@@ -27,7 +27,9 @@ export default {
   },
   setup() {
     const router = useRouter();
+
     onBeforeMount(() => {
+    console.log("index")
       axios
         .get("/api/user/auth", {
           headers: {
@@ -40,9 +42,9 @@ export default {
             name: "Login",
           });
         });
+      
     });
     return {
-      
     }
   }
 };

@@ -5,8 +5,8 @@ const userModel = require("../models/User");
 const limitNum = 6;
 
 
-router.get("/getBasic", async (req, res) => {
-    const works = await workModel.find({}, {workFile:0}).sort({date: -1}).skip(parseInt(req.query.skip)).limit(limitNum).lean(); // mongoose返回的data默认是不可编辑的，得在返回的结果后面加上.lean()才可以进行编辑 或者obj = obj.toObject()也可以
+router.get("/getWork", async (req, res) => {
+    const works = await workModel.find().sort({date: -1}).skip(parseInt(req.query.skip)).limit(limitNum).lean(); // mongoose返回的data默认是不可编辑的，得在返回的结果后面加上.lean()才可以进行编辑 或者obj = obj.toObject()也可以
     if(works.length == 0){
         console.log("no more")
         return res.status(403).send("No more works.")
@@ -36,9 +36,10 @@ router.get("/getBasic", async (req, res) => {
     return res.status(200).send(completely_works)
 });
 
-router.get("/getWorkFile", async (req, res) => {
-    const works = await workModel.find({}, {workFile:1}).sort({date: -1}).skip(parseInt(req.query.skip)).limit(limitNum).lean();
-    return res.status(200).send(works)
+// 为了骨架屏。 获取作品的宽高
+router.get("/getWorkFileInfo", async (req, res) => {
+    const works_info = await workModel.find({}, {workFileWidth: 1, workFileHeight: 1}).sort({date: -1}).limit(limitNum).lean();
+    return res.status(200).send(works_info)
     
 });
 

@@ -23,16 +23,15 @@ const uploadToken = putPolicy.uploadToken(mac);
 
 // 上传整个作品(文件+标题+简介)
 router.post("/", verifyToken, formidableMiddleware(), async (req, res) => {
+    // 七牛的东西
     const formUploader = new qiniu.form_up.FormUploader();
     const putExtra = new qiniu.form_up.PutExtra();
     const key = req.fields.workFileName;
 
     // 接收前端图片数据流
     const workFile = req.fields.workFile;
-    // 构建图片名 这个主要是生成唯一图片名字利于存储 当然为了方便就写时间戳 实际开发可千万别 可能出现两人同一时间
-    const fileName = Date.now() + '.png';
     // 构建图片路径 需要在上一层目录下新建一个image
-    const filePath = './.tmp/' + fileName;
+    const filePath = './.tmp/' + key;
     // 过滤data:URL
     const base64Data = workFile.replace(/^data:image\/\w+;base64,/, "");
     const dataBuffer = new Buffer.from(base64Data, 'base64');
@@ -57,6 +56,8 @@ router.post("/", verifyToken, formidableMiddleware(), async (req, res) => {
                             workName: req.fields.workName,
                             workIntro: req.fields.workIntro,
                             workFile: workFileUrl,
+                            workFileWidth: req.fields.workFileWidth,
+                            workFileHeight: req.fields.workFileHeight,
                             userId: userId
                         });
                     

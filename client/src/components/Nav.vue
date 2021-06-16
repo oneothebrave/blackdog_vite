@@ -125,7 +125,7 @@ export default {
           to: "/login",
         },
       ]);
-    const user_menu_btn = ref(null)
+    const user_menu_btn = ref(null);
     onBeforeMount(() => {
       axios
         .get("/api/user/getAvatar", {
@@ -151,6 +151,9 @@ export default {
       displayDialog.value = false;
     };
 
+
+    let workFileWidth = 0;
+    let workFileHeight = 0;
     // 上传图片的文件监听器
     const getWorkFile = (event) => {
       const reader = new FileReader();
@@ -160,6 +163,13 @@ export default {
 
       reader.onload = function (e) {
         workFile = this.result;
+        // 获取图片的宽和高
+        const image = new Image();
+        image.src = e.target.result;
+        image.onload = function() {
+          workFileWidth = this.width;
+          workFileHeight = this.height;
+        };
       };
     };
 
@@ -170,6 +180,8 @@ export default {
       formData.append("workFile", workFile);
       formData.append("workFileName", workFileName);
       formData.append("workIntro", workIntro.value);
+      formData.append("workFileWidth", workFileWidth);
+      formData.append("workFileHeight", workFileHeight);
       axios
         .post(
           "/api/upload/",

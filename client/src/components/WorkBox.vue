@@ -32,7 +32,12 @@
         {{ work.workName }}
       </div>
       <div class="work-work">
-        <img v-lazyload="work.workFile" />
+        <img :src="work.workFile"/>
+        <!-- <img v-lazyload="work.workFile" /> -->
+        <!-- <Suspense>
+          <template #default><img :src="work.workFile" /></template>
+          <template #fallback><div style="height:600px;width:400px; background:red;z-index:999"></div></template>
+        </Suspense> -->
       </div>
     </section>
     <section class="p-col work-comment-container">
@@ -73,13 +78,13 @@ import axios from "axios";
 import { useToast } from "primevue/usetoast";
 // import { toRefs } from 'vue';
 export default {
-  async setup() {
+  props: ["worksInfo"],
+  async setup(props) {
     let ready4load = true;
-    let skip = ref(0);
     const toast = useToast();
     let works = reactive([]);
-    let sql_data = null;
-    let work_index = 0;
+    let skip = ref(0);
+    const worksInfo = props.worksInfo;
 
     onMounted(() => {
       window.addEventListener("scroll", scrollHandler, false);
@@ -94,26 +99,29 @@ export default {
       if (ready4load) {
         // 需要加载才能进来，进来就“锁”上
         ready4load = false;
-        // 获取作品除了图片之外的其他信息
+        // 获取作品
         await axios
-          .get("/api/retrieve/getBasic", {
+          .get("/api/retrieve/getWork", {
             params: {
               skip: skip.value,
             },
           })
           .then(async (res) => {
-            sql_data = res.data;
-            work_index = 0;
+            const sql_data = res.data;
+            let work_index = 0;
             for (; work_index < sql_data.length - 1; work_index++) {
               works.push({
                 _id: sql_data[work_index]._id,
                 workName: sql_data[work_index].workName,
                 workIntro: sql_data[work_index].workIntro,
+                workFile: sql_data[work_index].workFile,
                 authorAvatar: sql_data[work_index].authorAvatar,
                 authorName: sql_data[work_index].authorName,
+                _height: 800
               });
             }
             ready4load = true; // 加载完之后开“锁”，允许下一次
+            skip.value += sql_data[work_index].limitNum;
           })
           .catch((err) => {
             if (err.response.status == 403) {
@@ -129,25 +137,25 @@ export default {
           });
 
         // 获取作品图片
-        !!ready4load &&
-          (await axios
-            .get("/api/retrieve/getWorkFile", {
-              params: {
-                skip: skip.value,
-              },
-            })
-            .then((res) => {
-              // 将作品图片放进works里
-              for (
-                let workFileIndex = skip.value, index = 0;
-                workFileIndex < works.length;
-                workFileIndex++, index++
-              ) {
-                works[workFileIndex]["workFile"] = res.data[index]["workFile"];
-              }
-              skip.value += sql_data[work_index].limitNum;
-              ready4load = true; // 加载完之后开“锁”，允许下一次
-            }));
+        // !!ready4load &&
+        //   (await axios
+        //     .get("/api/retrieve/getWorkFile", {
+        //       params: {
+        //         skip: skip.value,
+        //       },
+        //     })
+        //     .then((res) => {
+        //       // 将作品图片放进works里
+        //       for (
+        //         let workFileIndex = skip.value, index = 0;
+        //         workFileIndex < works.length;
+        //         workFileIndex++, index++
+        //       ) {
+        //         works[workFileIndex]["workFile"] = res.data[index]["workFile"];
+        //       }
+        //       skip.value += sql_data[work_index].limitNum;
+        //       ready4load = true; // 加载完之后开“锁”，允许下一次
+        //     }));
       }
     };
 
@@ -195,6 +203,7 @@ export default {
       poi_menu,
       poi,
       works,
+      worksInfo
     };
   },
 };
@@ -235,8 +244,7 @@ export default {
 
 
   & .work-title
-    border-bottom: 1px solid #212121
-    height: 50px
+    height: 60px
     padding: 16px
     align-items: center
     line-height: 18px
@@ -246,10 +254,12 @@ export default {
     color: var(--primary-color-text)
 
 
-  & .work-work img
-    width: 100%
-    height: 100%
-    object-fit: cover
+  & .work-work 
+    background: #292929
+    img
+      width: 100%
+      height: 100%
+      object-fit: cover
 
 .work-comment-container
   margin-left: 10px

@@ -256,13 +256,14 @@ export default {
     min-height: 200px
     position: relative
     background: #292929
-    img
-      // position: absolute
-      // top: 0
-      // bottom: 0
-      // left: 0
-      // right: 0
-      // margin: auto
+    .img_small
+      position: absolute
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
+      margin: auto
+    .img_big
       width: 100%
       height: 100%
       object-fit: cover

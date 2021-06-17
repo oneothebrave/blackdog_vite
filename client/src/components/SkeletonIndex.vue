@@ -1,6 +1,5 @@
 <template>
-<div v-for="work of worksInfo">
-  <div class="p-grid top-blank" >
+  <div class="p-grid top-blank"  v-for="work of worksInfo">
     <section class="p-col-1 work-triple-container">
       <div class="work-triple">
         <div>
@@ -25,7 +24,8 @@
     </section>
     <section class="p-col-8 work-main-container">
       <div class="work-title"></div>
-      <div class="work-work" :style="{width: work[0] + 'px' , height: work[1] + 'px'}">
+      <div class="work-work">
+        <img :style="{width: work[0] + 'px' , height: work[1] + 'px'}" :class="{img_small: true}" />
       </div>
     </section>
     <section class="p-col work-comment-container">
@@ -45,7 +45,6 @@
       </div>
     </section>
   </div>
-</div>
 </template>
 
 <script>
@@ -60,6 +59,7 @@ export default {
           for(let info of res.data){
               worksInfo.push([info.workFileWidth, info.workFileHeight])
           }
+          
     })
     return {
       worksInfo
@@ -69,6 +69,9 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+
+.top-blank
+  margin-bottom: 10rem
 
 .work-triple-container
     width: 53px
@@ -109,8 +112,23 @@ export default {
 
 
     .work-work 
-        height:500px
-        animation: trans-bg 2s infinite
+        margin-top: 15px
+        min-height: 200px
+        position: relative
+        .img_small
+          position: absolute
+          top: 0
+          bottom: 0
+          left: 0
+          right: 0
+          margin: auto
+          animation: trans-bg 2s infinite
+        .img_big
+          width: 100%
+          height: 100%
+          object-fit: cover
+          animation: trans-bg 2s infinite
+
         
 .work-comment-container
     margin-left: 10px

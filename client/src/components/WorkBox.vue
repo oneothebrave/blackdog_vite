@@ -34,10 +34,6 @@
       <div class="work-work">
         <img :src="work.workFile"/>
         <!-- <img v-lazyload="work.workFile" /> -->
-        <!-- <Suspense>
-          <template #default><img :src="work.workFile" /></template>
-          <template #fallback><div style="height:600px;width:400px; background:red;z-index:999"></div></template>
-        </Suspense> -->
       </div>
     </section>
     <section class="p-col work-comment-container">
@@ -244,7 +240,7 @@ export default {
 
 
   & .work-title
-    height: 60px
+    height: 45px
     padding: 16px
     align-items: center
     line-height: 18px
@@ -252,11 +248,21 @@ export default {
     font-weight: bold
     font-size: 14px
     color: var(--primary-color-text)
+    border-bottom: 1px solid #303030
 
 
   & .work-work 
+    margin-top: 15px
+    min-height: 200px
+    position: relative
     background: #292929
     img
+      // position: absolute
+      // top: 0
+      // bottom: 0
+      // left: 0
+      // right: 0
+      // margin: auto
       width: 100%
       height: 100%
       object-fit: cover

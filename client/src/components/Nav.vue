@@ -387,8 +387,8 @@ export default {
 
 
   &-func i,
-img
-  cursor: pointer
+  img
+    cursor: pointer
 
 .head-image img
   width: 2.36rem

@@ -1,5 +1,6 @@
 <template>
-  <div class="p-grid top-blank" v-for="work of worksInfo">
+<div v-for="work of worksInfo">
+  <div class="p-grid top-blank" >
     <section class="p-col-1 work-triple-container">
       <div class="work-triple">
         <div>
@@ -44,6 +45,7 @@
       </div>
     </section>
   </div>
+</div>
 </template>
 
 <script>
@@ -67,8 +69,6 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.top-blank
-    margin-bottom: 10rem
 
 .work-triple-container
     width: 53px

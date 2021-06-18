@@ -24,8 +24,12 @@
     </section>
     <section class="p-col-8 work-main-container">
       <div class="work-title"></div>
-      <div class="work-work">
-        <img :style="{width: work[0] + 'px' , height: work[1] + 'px'}" :class="{img_small: true}" />
+      <!-- 先判断work[2]是否为false，即是否为大图，是大图才返回数值-->
+      <div class="work-work" :style="{height: work[2] == false && (605 * work[1] /work[0] + 'px')}">
+        <div 
+          :style="{width: work[0] + 'px' , height: work[1] + 'px'}" 
+          :class="{img_small: work[2], img_big: !work[2] }" >
+        </div>
       </div>
     </section>
     <section class="p-col work-comment-container">
@@ -53,16 +57,30 @@ import axios from "axios";
 export default {
   setup(){
     const worksInfo = reactive([]);
+    let workworkWidth = 0;
+    const workworkHeight = 200;
+
     axios
       .get("/api/retrieve/getWorkFileInfo")
       .then((res) => {
           for(let info of res.data){
               worksInfo.push([info.workFileWidth, info.workFileHeight])
           }
-          
-    })
+      })
+      .then(() => {
+        // 随便取一个（就取第一个吧）的宽度  反正宽度都是一样的 605px
+        workworkWidth = document.getElementsByClassName('work-work')[0].offsetWidth;
+        worksInfo.forEach((value, index) => {
+          // work[2]为true代表小图片(宽小于605，高度小于200,暂时这么定)，false代表大图片
+          value.push(value[0] < workworkWidth && value[1] < workworkHeight)
+          worksInfo[index] = value
+        });
+      })
+
+
     return {
-      worksInfo
+      worksInfo,
+      workworkWidth
     }
   }
 };
@@ -100,7 +118,6 @@ export default {
 
 
     .work-title
-        border-bottom: 1px solid #212121
         height: 18px
         padding: 10px
         align-items: center
@@ -112,7 +129,6 @@ export default {
 
 
     .work-work 
-        margin-top: 15px
         min-height: 200px
         position: relative
         .img_small
@@ -124,9 +140,9 @@ export default {
           margin: auto
           animation: trans-bg 2s infinite
         .img_big
-          width: 100%
-          height: 100%
-          object-fit: cover
+          width: 100% !important
+          height: 100% !important
+          object-fit: cover !important
           animation: trans-bg 2s infinite
 
         

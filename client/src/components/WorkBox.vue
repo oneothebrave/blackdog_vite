@@ -31,8 +31,12 @@
       <div class="work-title">
         {{ work.workName }}
       </div>
-      <div class="work-work">
-        <img :src="work.workFile"/>
+      <div class="work-work" :style="{height:  work.isSmallImg == false && (605 * work.workFileHeight / work.workFileWidth + 'px')}">
+        <img 
+          :src="work.workFile" 
+          :style="{width: work.workFileWidth + 'px' , height: work.workFileHeight + 'px'}" 
+          :class="{img_small: work.isSmallImg, img_big: !work.isSmallImg }"
+        />
         <!-- <img v-lazyload="work.workFile" /> -->
       </div>
     </section>
@@ -81,6 +85,8 @@ export default {
     let works = reactive([]);
     let skip = ref(0);
     const worksInfo = props.worksInfo;
+    let workworkWidth = 0;
+    const workworkHeight = 200;
 
     onMounted(() => {
       window.addEventListener("scroll", scrollHandler, false);
@@ -105,15 +111,20 @@ export default {
           .then(async (res) => {
             const sql_data = res.data;
             let work_index = 0;
+            workworkWidth = document.getElementsByClassName('work-work')[0].offsetWidth;
             for (; work_index < sql_data.length - 1; work_index++) {
+              let workFileWidth = sql_data[work_index].workFileWidth;
+              let workFileHeight = sql_data[work_index].workFileHeight;
               works.push({
                 _id: sql_data[work_index]._id,
                 workName: sql_data[work_index].workName,
                 workIntro: sql_data[work_index].workIntro,
                 workFile: sql_data[work_index].workFile,
+                workFileWidth: workFileWidth,
+                workFileHeight: workFileHeight,
                 authorAvatar: sql_data[work_index].authorAvatar,
                 authorName: sql_data[work_index].authorName,
-                _height: 800
+                isSmallImg: workFileWidth < workworkWidth && workFileHeight < workworkHeight
               });
             }
             ready4load = true; // 加载完之后开“锁”，允许下一次
@@ -131,27 +142,6 @@ export default {
               ready4load = false;
             }
           });
-
-        // 获取作品图片
-        // !!ready4load &&
-        //   (await axios
-        //     .get("/api/retrieve/getWorkFile", {
-        //       params: {
-        //         skip: skip.value,
-        //       },
-        //     })
-        //     .then((res) => {
-        //       // 将作品图片放进works里
-        //       for (
-        //         let workFileIndex = skip.value, index = 0;
-        //         workFileIndex < works.length;
-        //         workFileIndex++, index++
-        //       ) {
-        //         works[workFileIndex]["workFile"] = res.data[index]["workFile"];
-        //       }
-        //       skip.value += sql_data[work_index].limitNum;
-        //       ready4load = true; // 加载完之后开“锁”，允许下一次
-        //     }));
       }
     };
 
@@ -248,14 +238,13 @@ export default {
     font-weight: bold
     font-size: 14px
     color: var(--primary-color-text)
-    border-bottom: 1px solid #303030
 
 
   & .work-work 
-    margin-top: 15px
     min-height: 200px
     position: relative
-    background: #292929
+    img
+      animation: trans-bg 2s infinite
     .img_small
       position: absolute
       top: 0
@@ -264,9 +253,9 @@ export default {
       right: 0
       margin: auto
     .img_big
-      width: 100%
-      height: 100%
-      object-fit: cover
+      width: 100% !important
+      height: 100% !important
+      object-fit: cover !important
 
 .work-comment-container
   margin-left: 10px

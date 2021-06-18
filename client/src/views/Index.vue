@@ -29,7 +29,6 @@ export default {
     const router = useRouter();
 
     onBeforeMount(() => {
-    console.log("index")
       axios
         .get("/api/user/auth", {
           headers: {

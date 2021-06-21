@@ -24,10 +24,15 @@ const routes = [
     component: () => import('../components/SkeletonIndex.vue')
   },
   {
-    path: '/user',
+    path: "/:username",
     name: 'User',
     component: () => import('../views/User.vue')
   },
+  {
+    path: "/:notfound",
+    name: 'NotFound',
+    component: () => import('../views/404.vue')
+  }
 ]
 
 const router = createRouter({

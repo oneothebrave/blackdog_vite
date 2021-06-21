@@ -89,7 +89,7 @@ export default {
 <style lang="sass" scoped>
 
 .top-blank
-  margin-bottom: 10rem
+  margin-top: 10rem
 
 .work-triple-container
     width: 53px

@@ -3,7 +3,7 @@ const userModel = require("../models/User"); // 引入 Model
 const bcrypt = require("bcryptjs"); // 加密密码的插件
 const jwt = require("jsonwebtoken");
 const { registerValidation } = require("../util/registerValidation"); // 注册验证中间件
-const { loginValidation, userExistValidation } = require("../util/loginValidation");
+const { loginValidation, emailExistValidation, usernameExistValidation } = require("../util/loginValidation");
 const verifyToken = require("../util/verifyToken"); // token middleware
 
 // 注册
@@ -32,13 +32,23 @@ router.post("/register", async (req, res) => {
     };
 });
 
-// 账号是否存在(通过看邮箱是不是在数据库判断)
-router.post("/userExist", async (req, res) => {
-    const validationError = await userExistValidation(req.body);
+// 邮箱是否存在(通过看邮箱是不是在数据库判断)  -- 登录时判断
+router.post("/emailExist", async (req, res) => {
+    const validationError = await emailExistValidation(req.body);
     if(validationError){
         return res.status(400).send(validationError);
     }else{
         return res.status(200).send(true);
+    }
+});
+
+// 用户名是否存在(通过看邮箱是不是在数据库判断)  -- 跳转个人中心时判断
+router.post("/usernameExist", async (req, res) => {
+    const result = await usernameExistValidation(req.body);
+    if(result.err){
+        return res.status(400).send(result.data);
+    }else{
+        return res.status(200).send(result.data);
     }
 });
 

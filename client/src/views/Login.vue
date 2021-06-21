@@ -51,28 +51,35 @@
 import { onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router"; // 在 composition api中使用useRouter或useRoute来设置路由 取代option api中的this.$route....
 import axios from "axios";
-import {setCookie} from "../composable/js/cookieHandler.js"
+import { setCookie } from "../composable/js/cookieHandler.js";
 export default {
   setup() {
     // const { ctx } = getCurrentInstance(); // 替代vue2中的this
     // 登录界面背景用bd.jpg，切换到其他界面要换背景为纯色
-    document.querySelector('html').setAttribute('style', 'background: url("/static/bd.jpg"); background-size: cover');
-    onBeforeUnmount(()=>{
-      document.querySelector('html').setAttribute('style', 'background: #181818');
+    document
+      .querySelector("html")
+      .setAttribute(
+        "style",
+        'background: url("/static/bd.jpg"); background-size: cover'
+      );
+    onBeforeUnmount(() => {
+      document
+        .querySelector("html")
+        .setAttribute("style", "background: #181818");
     });
 
-    const email = ref("");  // 邮箱输入框
+    const email = ref(""); // 邮箱输入框
     const showPasswordInput = ref(false); // boolean 是否显示密码输入框
     const password = ref(""); // 密码输入框
     const invalidUser = ref(false); // 账户无效框变红
-    const invalidPassword = ref(false);  // 密码无效框变红
+    const invalidPassword = ref(false); // 密码无效框变红
     const router = useRouter();
 
     const checkUserExist = () => {
       // 检查是否存在该用户
       axios
-        .post("/api/user/userExist", {
-            email: email.value
+        .post("/api/user/emailExist", {
+          email: email.value,
         })
         .then((response) => {
           showPasswordInput.value = !showPasswordInput.value;
@@ -86,8 +93,8 @@ export default {
           user_exist_timer = setTimeout(() => {
             invalidUser.value = true;
           }, 2000);
-          console.log(err)
-        })
+          console.log(err);
+        });
     };
     let find_user_timer; // 用户暂时停止输入了 就假设用户确定已经输入的就是他的账号  开始验证是否有该账号
     let user_exist_timer; //  已验证没有该账号  用户还是没有增加输入  时间一到 提示账号不存在
@@ -111,26 +118,26 @@ export default {
     const handleLogin = () => {
       axios
         .post("/api/user/login", {
-            email: email.value,
-            password: password.value,
+          email: email.value,
+          password: password.value,
         })
         .then((response) => {
-            // 将token保存进localStorage中
-            localStorage["auth-token"] = response.data["auth-token"];
-            // 将username和email保存进cookie中
-            setCookie("email", response.data["email"]);
-            setCookie("username", response.data["username"]);
-            // 路由跳转页面的同时携带参数
-            router.push({ 
-              name: "Index", 
-              // params: {
-              //   "username": data[0]["username"]
-              // }
-            });
+          // 将token保存进localStorage中
+          localStorage["auth-token"] = response.data["auth-token"];
+          // 将username和email保存进cookie中
+          setCookie("email", response.data["email"]);
+          setCookie("username", response.data["username"]);
+          // 路由跳转页面的同时携带参数
+          router.push({
+            name: "Index",
+            // params: {
+            //   "username": data[0]["username"]
+            // }
+          });
         })
         .catch((err) => {
           invalidPassword.value = true;
-          console.log(err)
+          console.log(err);
         });
     };
     return {
@@ -147,18 +154,17 @@ export default {
 };
 </script>
 
-<style scoped>
-.login-box {
-  padding: 3rem 2rem;
-  margin-top: 5rem;
-  border: 1px solid #dedede;
-  border-radius: 2px;
-}
-.app-name {
-  font-size: 2rem;
-  margin: 0 0 2.5rem 0;
-}
-.login-btn {
-  width: 100%;
-}
+<style lang="sass" scoped>
+.login-box
+  padding: 3rem 2rem
+  margin-top: 10rem
+  border: 1px solid #dedede
+  border-radius: 2px
+
+.app-name
+  font-size: 2rem
+  margin: 0 0 2.5rem 0
+
+.login-btn
+  width: 100%
 </style>
